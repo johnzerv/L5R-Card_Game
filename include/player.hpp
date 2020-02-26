@@ -47,7 +47,6 @@ public:
 
   bool hasProvinces() const{ return !(provinces.empty()); }
  
-  // std::list<iterator getSpecifiedCard(int);
   bool isMoneyEnough(Card*);
   void buyGreenCard(int, int);
   void buyBlackCard(int);
@@ -57,6 +56,7 @@ public:
   bool hasMaxItems(Personality *);
   bool wantToUpgrade() const;
 
+/* Methods added for battlePhase */
   void activatePersonalities();
   unsigned calculateAttackPoints();
   unsigned calculateDefencePoints();
@@ -65,6 +65,7 @@ public:
   void destroyActPers();
   void discardActPCards(int);
   void battleReverberations();
+  void reduceActPersHonour();
 
   /*Getters/Setters*/
   std::list <BlackCard *> getProvinces() const{ return provinces; }

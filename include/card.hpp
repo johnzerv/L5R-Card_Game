@@ -1,5 +1,3 @@
-// #ifndef CARD
-// #define CARD
 #pragma once
 
 #include <iostream>
@@ -58,8 +56,6 @@ public:
     effectBonus(effBonus), effectCost(effCost)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  virtual ~GreenCard(){}
-
   unsigned getAtkBonus() const { return attackBonus; }
   unsigned getDefBonus() const { return defenceBonus; }
   unsigned getMinHonour() const { return minimumHonour; }
@@ -99,7 +95,7 @@ public:
     GreenCard::print();
   }
 
-  ~Follower(){}
+  void detach(){ delete(this); }
 
   virtual cardType getType() const { return FOLLOWER; }
 };
@@ -117,10 +113,9 @@ public:
     durability(durab)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  ~Item(){}
-
   unsigned getDurability() const { return durability; }
   void reduceDurability() { durability--; }
+  void detach(){ delete(this); }
 
   virtual void print() const {
     std::cout << "Item - ";
@@ -179,20 +174,21 @@ public:
   ~Personality(){
     std::list<Follower *>::iterator it1;
     for(it1 = followers.begin(); it1 != followers.end(); it1++)
-      delete (*it1);
+      (*it1)->detach();
     followers.clear();
 
     std::list<Item *>::iterator it2;
     for(it2 = items.begin(); it2 != items.end(); it2++)
-      delete (*it2);
+      (*it2)->detach();
     items.clear();
   }
 
-  // unsigned getAtk() const { return attack; }
-  // unsigned getDef() const { return defence; }
+  unsigned getAtk() const { return attack; }
+  unsigned getDef() const { return defence; }
   unsigned getHonour() const { return honour; }
-
   bool getIsDead() const { return isDead; }
+
+  void reduceHonour(){ honour--; }
 
   std::list <Follower *> getFollowers() const { return followers; }
   std::list <Item *> getItems() const { return items; }
@@ -247,6 +243,8 @@ public:
     return totalPoints;
   }
 
+  void performSeppuku(){ delete(this); }
+
   virtual void print() const {
     std::cout << "Personality - ";
     BlackCard::print();
@@ -271,8 +269,6 @@ public:
   : BlackCard(name, cost), harvestValue(harv), upperHolding(nullptr),
     subHolding(nullptr)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
-
-  ~Holding(){}
 
   unsigned getHarvestValue() const { return harvestValue; }
 
@@ -327,5 +323,3 @@ public:
 
   cardType getType() const{ return HOLDING; };  
 };
-
-// #endif

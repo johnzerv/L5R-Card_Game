@@ -41,7 +41,7 @@ Player::~Player(){
   army.clear();
 
   for(it2 = activatedPersonalities.begin(); it2 != activatedPersonalities.end(); it2++)
-    delete(*it2);
+    delete (*it2);
   activatedPersonalities.clear();
 
   list <GreenCard *>::iterator it3;
@@ -138,12 +138,6 @@ bool Player::checkWinningCondition(Player *players, unsigned int playersNumber) 
   return (hasWon && this->hasProvinces());
 }
 
-/* iterator Player::getSpecifiedCard(int position){
-  list <GreenCard *>::iterator it = hand.begin();
-  for(int i = 0, it = hand.begin(); i < position; i++, it++);
-  return it;
-} */
-
 bool Player::isMoneyEnough(Card *myCard){
   return (money >= myCard->getCost());
 }
@@ -230,8 +224,10 @@ void Player::buyBlackCard(int target_province) {
 
     if ((*cardIt)->getType() == PERSONALITY)
       army.push_back((Personality*) *cardIt);
-    else
-      holdings.push_back((Holding*) *cardIt);
+    else{
+      formMineChain((Holding *) *cardIt);
+      holdings.push_back((Holding *) *cardIt);
+    }
 
     provinces.erase(cardIt);
     drawDynastyCard();
@@ -241,8 +237,10 @@ void Player::buyBlackCard(int target_province) {
 
     if ((*cardIt)->getType() == PERSONALITY)
       army.push_back((Personality *) *cardIt);
-    else
+    else{
+      formMineChain((Holding *) *cardIt);
       holdings.push_back((Holding *) *cardIt);
+    }
 
     provinces.erase(cardIt);
     drawDynastyCard();
@@ -341,6 +339,7 @@ void Player::activatePersonalities(){
           i++;
 
       activatedPersonalities.push_back(*it);
+      army.erase(it);
     }
     else 
       cout << "Wrong input, try again !" << endl << endl;
@@ -424,8 +423,24 @@ void Player::battleReverberations(){
 
     for(it3 = (*it1)->getItems().begin(); it3 != (*it1)->getItems().end(); it3++){
       (*it3)->reduceDurability();
-      // if(!(*it3)->getDurability())
-        // (*it3)->detach();
+      if(!(*it3)->getDurability()){
+        (*it3)->detach();
+        it3 = (*it1)->getItems().erase(it3);
+        it3--;  /* Don't skip any Item */
+      }
+    }
+  }
+}
+
+void Player::reduceActPersHonour(){
+  list<Personality *>::iterator it, temp;
+
+  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++){
+    (*it)->reduceHonour();
+    if(!(*it)->getHonour()){
+      (*it)->performSeppuku();  /* Suicide */
+      it = activatedPersonalities.erase(it);  /* pops it-nth position card and sets it = it + 1 */
+      it--; /* Don't skip any activated Personality */
     }
   }
 }

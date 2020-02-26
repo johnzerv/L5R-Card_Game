@@ -125,7 +125,7 @@ void GameBoard::battlePhase(Player &myPlayer){
 
   string input;
   cout << endl << "Choose a player to attack (0 - " 
-       << numberOfPlayers << ") or type 'ok' to continue:";
+       << numberOfPlayers << ") or type 'ok' to continue:"; /* prepei na meiwnetai to number of players otan pethainei kapoios paiktis */
   cin >> input;
 
   int chosenPlayer;
@@ -134,8 +134,9 @@ void GameBoard::battlePhase(Player &myPlayer){
     stringstream temp(input);
     temp >> chosenPlayer;
 
+    players[chosenPlayer].printProvinces();
     int chosenProvince;
-    cout << endl << "Choose a province to attack (0 - " << myPlayer.getNumberOfProvinces() << "): ";
+    cout << endl << "Choose a province to attack (0 - " << players[chosenPlayer].getNumberOfProvinces() << "): ";
     cin >> chosenProvince;
     cout << endl << endl;
 
@@ -143,18 +144,19 @@ void GameBoard::battlePhase(Player &myPlayer){
     int attackerPoints = myPlayer.calculateAttackPoints();
     int defencerPoints = players[chosenPlayer].calculateDefencePoints();
 
-    if(attackerPoints - defencerPoints - myPlayer.getInitialDefence()
-                                       > myPlayer.getInitialDefence()){
+    if(attackerPoints - defencerPoints - players[chosenPlayer].getInitialDefence()
+                                       > players[chosenPlayer].getInitialDefence()){
       players[chosenPlayer].destroyProvince(chosenProvince);
       players[chosenPlayer].reduceProvinces();
       players[chosenPlayer].destroyActPers();
     }
     else{
-      int difference = attackerPoints - defencerPoints;
+      int difference = attackerPoints - defencerPoints - getInitialDefence();
 
       if(difference > 0){
         players[chosenPlayer].destroyActPers();
         myPlayer.discardActPCards(difference);
+        myPlayer.reduceActPersHonour();
       }
       else if(attackerPoints == defencerPoints){
         myPlayer.destroyActPers();
