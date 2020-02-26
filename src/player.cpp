@@ -397,13 +397,16 @@ void Player::discardActPCards(int difference){
   list<Follower *>::iterator it2;
 
   for(it1 = activatedPersonalities.begin(); it1 != activatedPersonalities.end();){
-    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end();)
-      if((tempAtkPoints += (*it2)->getAtkBonus()) >= difference)
+    if(tempAtkPoints >= difference)
+      return;
+
+    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end();){
+      if(tempAtkPoints >= difference)
         return;
-      else{
-        delete(*it2);
-        it2 = (*it1)->getFollowers().erase(it2);
-      }
+
+      delete(*it2);
+      it2 = (*it1)->getFollowers().erase(it2);
+    }
 
     delete(*it1);
     it1 = activatedPersonalities.erase(it1);
