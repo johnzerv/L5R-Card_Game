@@ -1,5 +1,7 @@
 #include <iostream>
 #include <list>
+#include <string>
+#include <sstream>
 
 #include "../include/player.hpp"
 
@@ -37,6 +39,10 @@ Player::~Player(){
   for(it2 = army.begin(); it2 != army.end(); it2++)
     delete (*it2);
   army.clear();
+
+  for(it2 = activatedPersonalities.begin(); it2 != activatedPersonalities.end(); it2++)
+    delete(*it2);
+  activatedPersonalities.clear();
 
   list <GreenCard *>::iterator it3;
   GreenCard *tempGCardPtr;
@@ -94,6 +100,14 @@ void Player::printArmy(){
   list <Personality *>::iterator it;
   for(it = army.begin(); it != army.end(); ++it)
     (*it)->print();
+}
+
+void Player::printUntappedArmy(){
+  list <Personality *>::iterator it;
+
+  for(it = army.begin(); it != army.end(); ++it)
+    if(!((*it)->getIsTapped()))
+      (*it)->print();
 }
 
 inline void Player::printArena(){ printArmy(); }
@@ -306,4 +320,112 @@ bool Player::wantToUpgrade() const{
     return true;
   else  /* No error-handling */
     return false;
+}
+
+void Player::activatePersonalities(){
+  printUntappedArmy();
+  int selectedPersonality;
+  string selectedPersonalityStr;
+  cout << "Put a number of personality you want to activate for defence or attack or type ok to continue :";
+  cin >> selectedPersonalityStr;
+  cout << endl;
+
+  while(selectedPersonalityStr != "ok"){
+    stringstream temp(selectedPersonalityStr);
+    temp >> selectedPersonality;
+
+    if(selectedPersonality > 0 && selectedPersonality <= army.size()){
+      list<Personality *>::iterator it; int i;
+      for(i = 0, it = army.begin(); i < selectedPersonality; it++)
+        if(!(*it)->getIsTapped())
+          i++;
+
+      activatedPersonalities.push_back(*it);
+    }
+    else 
+      cout << "Wrong input, try again !" << endl << endl;
+
+    cout << "Put a number of personality you want to activate for defence or attack or type 'ok' to continue :";
+    cin >> selectedPersonalityStr;
+    cout << endl;
+  }
+}
+
+unsigned Player::calculateAttackPoints(){
+  unsigned totalPoints;
+  list<Personality *>::iterator it;
+
+  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
+    totalPoints += (*it)->calculateAttackPoints();
+
+  return totalPoints;
+}
+
+unsigned Player::calculateDefencePoints(){
+  unsigned totalPoints;
+  list<Personality *>::iterator it;
+
+  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
+    totalPoints += (*it)->calculateDefencePoints();
+
+  return totalPoints;
+}
+
+void Player::destroyProvince(int chosenProvince){
+  list<BlackCard *>::iterator it;
+  BlackCard *tempBCardPtr;
+
+  for(it = provinces.begin(); it != provinces.end(); it++);
+  if((tempBCardPtr = dynamic_cast<Personality *>(*it)) == nullptr)
+    tempBCardPtr = ((Holding *)(*it));
+  
+  delete(tempBCardPtr);
+  provinces.erase(it);
+}
+
+void Player::destroyActPers(){
+  list<Personality *>::iterator it;
+
+  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
+    delete(*it);
+  activatedPersonalities.clear();
+}
+
+void Player::discardActPCards(int difference){
+  int tempAtkPoints = 0;
+
+  list<Personality *>::iterator it1;
+  list<Follower *>::iterator it2;
+
+  for(it1 = activatedPersonalities.begin(); it1 != activatedPersonalities.end();){
+    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end();)
+      if((tempAtkPoints += (*it2)->getAtkBonus()) >= difference)
+        return;
+      else{
+        delete(*it2);
+        it2 = (*it1)->getFollowers().erase(it2);
+      }
+
+    delete(*it1);
+    it1 = activatedPersonalities.erase(it1);
+  }
+}
+
+void Player::battleReverberations(){
+  list<Personality *>::iterator it1;
+  list<Follower *>::iterator it2;
+  list<Item *>::iterator it3, temp;
+
+  for(it1 = activatedPersonalities.begin(); it1 != activatedPersonalities.end(); it1++){
+    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end(); it2++)
+      (*it2)->tap();
+
+    (*it1)->tap();
+
+    for(it3 = (*it1)->getItems().begin(); it3 != (*it1)->getItems().end(); it3++){
+      (*it3)->reduceDurability();
+      // if(!(*it3)->getDurability())
+        // (*it3)->detach();
+    }
+  }
 }

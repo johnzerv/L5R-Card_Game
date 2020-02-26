@@ -16,6 +16,7 @@ void GameBoard::initializeGameBoard(unsigned int playersNumber = 2){
 }
 
 void GameBoard::startingPhase(Player &myPlayer){
+  cout << endl << "-------- STARTING PHASE ----------" << endl << endl;
   myPlayer.untapEverything();
   myPlayer.drawFateCard();
   myPlayer.revealProvinces();
@@ -24,6 +25,7 @@ void GameBoard::startingPhase(Player &myPlayer){
 }
 
 void GameBoard::finalPhase(Player &myPlayer){
+  cout << endl << "-------- FINAL PHASE ----------" << endl << endl;
   myPlayer.discardSurplusFateCards();
   // myplayer.printGameStatistics();
   myPlayer.printHand();
@@ -33,6 +35,8 @@ void GameBoard::finalPhase(Player &myPlayer){
 }
 
 void GameBoard::equipPhase(Player &myPlayer){
+  cout << endl << "-------- EQUIPMENT PHASE ----------" << endl << endl;
+
   if(!myPlayer.getArmy().empty()){
     myPlayer.printArmy();
     myPlayer.printHand();
@@ -75,6 +79,8 @@ void GameBoard::equipPhase(Player &myPlayer){
 }
 
 void GameBoard::economyPhase(Player &myPlayer) {
+  cout << endl << "-------- ECONOMY PHASE ----------" << endl << endl;
+
   myPlayer.revealProvinces();
   myPlayer.printProvinces();
 
@@ -85,22 +91,22 @@ void GameBoard::economyPhase(Player &myPlayer) {
   for (int i = 0; i < myPlayer.getNumberOfProvinces(); i++, itProvince++)
     available[i] = ((*itProvince)->getRevealed() == true);
 
-  int target_province;
+  int targetProvince;
   for (int i = 0; i < myPlayer.getNumberOfProvinces(); i++) {
     cout << "Select a province (0 to 3) to buy (enter -1"
          << " if you wish to continue to the next phase)" << endl;
-    cin >> target_province;
+    cin >> targetProvince;
 
-    if (target_province == -1) return;
-    if (target_province < 0 || target_province > 3) {
+    if (targetProvince == -1) return;
+    if (targetProvince < 0 || targetProvince > 3) {
       cout << "Invalid province index, please try again" << endl;
       i--;
       continue;
     }
 
-    if (available[target_province]) {
-      available[target_province] = false;
-      myPlayer.buyBlackCard(target_province);
+    if (available[targetProvince]) {
+      available[targetProvince] = false;
+      myPlayer.buyBlackCard(targetProvince);
     }
     else {
       cout << "This province is unavailable, please choose another one" << endl;
@@ -108,4 +114,59 @@ void GameBoard::economyPhase(Player &myPlayer) {
       continue;
     }
   }
+}
+
+void GameBoard::battlePhase(Player &myPlayer){
+  cout << endl << "-------- BATTLE PHASE ----------" << endl << endl;
+  myPlayer.activatePersonalities();
+
+  for(int i = 0; i < numberOfPlayers; i++)
+    cout << "Player " << to_string(i) << "  ";
+
+  string input;
+  cout << endl << "Choose a player to attack (0 - " 
+       << numberOfPlayers << ") or type 'ok' to continue:";
+  cin >> input;
+
+  int chosenPlayer;
+
+  if(input != "ok"){
+    stringstream temp(input);
+    temp >> chosenPlayer;
+
+    int chosenProvince;
+    cout << endl << "Choose a province to attack (0 - " << myPlayer.getNumberOfProvinces() << "): ";
+    cin >> chosenProvince;
+    cout << endl << endl;
+
+    // No error-handling
+    int attackerPoints = myPlayer.calculateAttackPoints();
+    int defencerPoints = players[chosenPlayer].calculateDefencePoints();
+
+    if(attackerPoints - defencerPoints - myPlayer.getInitialDefence()
+                                       > myPlayer.getInitialDefence()){
+      players[chosenPlayer].destroyProvince(chosenProvince);
+      players[chosenPlayer].reduceProvinces();
+      players[chosenPlayer].destroyActPers();
+    }
+    else{
+      int difference = attackerPoints - defencerPoints;
+
+      if(difference > 0){
+        players[chosenPlayer].destroyActPers();
+        myPlayer.discardActPCards(difference);
+      }
+      else if(attackerPoints == defencerPoints){
+        myPlayer.destroyActPers();
+        players[chosenPlayer].destroyActPers();
+      }
+      else if(difference < 0){
+        myPlayer.destroyActPers();
+        players[chosenPlayer].discardActPCards(difference);
+      }
+      myPlayer.battleReverberations();
+    }
+
+  }
+
 }

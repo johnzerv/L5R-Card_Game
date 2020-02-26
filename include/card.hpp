@@ -65,7 +65,7 @@ public:
   unsigned getMinHonour() const { return minimumHonour; }
   std::string getCardTxt() const { return cardText; }
 
-  bool getIsUpgraded() const{ return isUpgraded; }
+  bool getIsUpgraded()const{ return isUpgraded; }
   unsigned getEffectBonus() const { return effectBonus; }
   unsigned getEffectCost() const { return effectCost; }
 
@@ -120,6 +120,7 @@ public:
   ~Item(){}
 
   unsigned getDurability() const { return durability; }
+  void reduceDurability() { durability--; }
 
   virtual void print() const {
     std::cout << "Item - ";
@@ -187,8 +188,8 @@ public:
     items.clear();
   }
 
-  unsigned getAtk() const { return attack; }
-  unsigned getDef() const { return defence; }
+  // unsigned getAtk() const { return attack; }
+  // unsigned getDef() const { return defence; }
   unsigned getHonour() const { return honour; }
 
   bool getIsDead() const { return isDead; }
@@ -204,6 +205,46 @@ public:
       followers.push_back((Follower *) CardPtr);
     else if(type == ITEM)
       items.push_back((Item *) CardPtr);
+  }
+
+  unsigned calculateAttackPoints(){
+    unsigned totalPoints = attack;
+    std::list<Item *>::iterator it1;
+
+    for(it1 = items.begin(); it1 != items.end(); it1++){
+      totalPoints += (*it1)->getAtkBonus();
+      if((*it1)->getIsUpgraded())
+        totalPoints += (*it1)->getEffectBonus();
+    }
+
+    std::list<Follower *>::iterator it2;
+    for(it2 = followers.begin(); it2 != followers.end(); it2++){
+      totalPoints += (*it2)->getAtkBonus();
+      if(((*it2)->getIsUpgraded()))
+        totalPoints += (*it2)->getEffectBonus();
+    }
+
+    return totalPoints;
+  }
+
+  unsigned calculateDefencePoints(){
+    unsigned totalPoints = attack;
+    std::list<Item *>::iterator it1;
+
+    for(it1 = items.begin(); it1 != items.end(); it1++){
+      totalPoints += (*it1)->getDefBonus();
+      if((*it1)->getIsUpgraded())
+        totalPoints += (*it1)->getEffectBonus();
+    }
+
+    std::list<Follower *>::iterator it2;
+    for(it2 = followers.begin(); it2 != followers.end(); it2++){
+      totalPoints += (*it2)->getDefBonus();
+      if(((*it2)->getIsUpgraded()))
+        totalPoints += (*it2)->getEffectBonus();
+    }
+
+    return totalPoints;
   }
 
   virtual void print() const {

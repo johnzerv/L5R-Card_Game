@@ -26,6 +26,7 @@ private:
 
   std::list <Holding *> holdings;
   std::list <Personality *> army;
+  std::list <Personality *> activatedPersonalities;
 
 public:
   Player();
@@ -40,6 +41,7 @@ public:
   void printArena() ;
   void printProvinces() ;
   void printArmy() ;
+  void printUntappedArmy();
   void discardSurplusFateCards();
   bool checkWinningCondition(Player *, unsigned int) const;
 
@@ -55,6 +57,15 @@ public:
   bool hasMaxItems(Personality *);
   bool wantToUpgrade() const;
 
+  void activatePersonalities();
+  unsigned calculateAttackPoints();
+  unsigned calculateDefencePoints();
+  void destroyProvince(int);
+  void reduceProvinces() { numberOfProvinces--; }
+  void destroyActPers();
+  void discardActPCards(int);
+  void battleReverberations();
+
   /*Getters/Setters*/
   std::list <BlackCard *> getProvinces() const{ return provinces; }
   std::list <GreenCard *> getHand() const{ return hand; }
@@ -62,6 +73,7 @@ public:
   std::list <Personality *> getArmy() const{ return army; }
 
   unsigned getSizeOfHand() const{ return hand.size(); }
+  unsigned getSizeOfArmy() const{ return army.size(); }
   unsigned getMoney() const{ return money; }
   unsigned getHonour() const{ return honour; }
   unsigned getInitialDefence() const{ return initialDefence; }
