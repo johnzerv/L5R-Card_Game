@@ -28,44 +28,17 @@ private:
   std::list <Personality *> army;
   std::list <Personality *> activatedPersonalities;
 
-public:
-  Player();
-  ~Player();
-
-  void untapEverything();
-  void drawFateCard();
-  void drawDynastyCard();
-  void revealProvinces() ;
-  void printHoldings();
-  void printHand() ;
-  void printArena() ;
-  void printProvinces() ;
-  void printArmy() ;
   void printUntappedArmy();
-  void discardSurplusFateCards();
-  bool checkWinningCondition(Player *, unsigned int) const;
 
   bool hasProvinces() const{ return !(provinces.empty()); }
  
+ /* Useful methods for equipment/economy Phase */
   bool isMoneyEnough(Card*);
-  void buyGreenCard(int, int);
-  void buyBlackCard(int);
   bool tapHoldings(Card*);
   bool upgradeGreenCard(GreenCard *);
   bool hasMaxFollowers(Personality *);
   bool hasMaxItems(Personality *);
   bool wantToUpgrade() const;
-
-/* Methods added for battlePhase */
-  void activatePersonalities();
-  unsigned calculateAttackPoints();
-  unsigned calculateDefencePoints();
-  bool destroyProvince(int);
-  void reduceProvinces() { numberOfProvinces--; }
-  void destroyActPers();
-  void discardActPCards(int);
-  void battleReverberations();
-  void reduceActPersHonour();
 
   /*Getters/Setters*/
   std::list <BlackCard *> getProvinces() const{ return provinces; }
@@ -79,4 +52,36 @@ public:
   unsigned getHonour() const{ return honour; }
   unsigned getInitialDefence() const{ return initialDefence; }
   unsigned getNumberOfProvinces() const { return numberOfProvinces; }
+
+public:
+  Player();
+  ~Player();
+
+  /* Methods for starting/final Phase */
+  void untapEverything();
+  void drawFateCard();
+  void drawDynastyCard();
+  void revealProvinces();
+  void printHoldings();
+  void printHand();
+  void printArena();
+  void printProvinces();
+  void printArmy();
+  void discardSurplusFateCards();
+
+  void buyGreenCard(int, int);
+  void buyBlackCard(int);
+
+/* Methods added for battlePhase */
+  void activatePersonalities();
+  unsigned calculateAttackPoints();
+  unsigned calculateDefencePoints();
+  bool destroyProvince(int);
+  void reduceProvinces() { numberOfProvinces--; }
+  void destroyActPers();
+  void discardActPCards(int);
+  void battleReverberations();
+  void reduceActPersHonour();
+
+  bool checkWinningCondition(Player *, unsigned int) const;
 };
