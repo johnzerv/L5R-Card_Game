@@ -160,8 +160,6 @@ private:
   unsigned defence;
   unsigned honour;
 
-  bool isDead;
-
   std::list <Follower *> followers;
   std::list <Item *> items;
 
