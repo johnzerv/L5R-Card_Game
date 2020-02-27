@@ -270,8 +270,6 @@ public:
     subHolding(nullptr)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  unsigned getHarvestValue() const { return harvestValue; }
-
   Holding * getUpperHolding() const { return upperHolding; }
   Holding * getSubHolding() const { return subHolding; }
 
@@ -318,7 +316,7 @@ public:
     std::cout << "honour: " << honour << std::endl
               << "initialDefence: " << initialDefence << std::endl;
   }
-  
+
   static unsigned int getID() { return ID; }
 
   cardType getType() const{ return HOLDING; };  

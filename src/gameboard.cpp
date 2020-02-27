@@ -165,6 +165,7 @@ void GameBoard::battlePhase(Player &myPlayer){
       else if(difference < 0){
         myPlayer.destroyActPers();
         players[chosenPlayer].discardActPCards(difference);
+        players[chosenPlayer].reduceActPersHonour();
       }
       myPlayer.battleReverberations();
     }

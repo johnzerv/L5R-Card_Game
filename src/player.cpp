@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Player::Player() : numberOfProvinces(NO_OF_PROVINCES){
+Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES){
   decks.createFateDeck();
   decks.createDynastyDeck();
 
@@ -152,30 +152,18 @@ void Player::buyGreenCard(int position, int personalityPos){
   if((*cardIt)->getType() == FOLLOWER)
     if(!hasMaxFollowers(*personalityIt))
       if((*personalityIt)->getHonour() >= (*cardIt)->getMinHonour()){
-        if(isMoneyEnough(*cardIt)){
+        if(tapHoldings(*cardIt)){
           (*personalityIt)->expandPersonality(*cardIt, FOLLOWER);
           money -= (*cardIt)->getCost();
-          
+
           if(wantToUpgrade())
             if(!upgradeGreenCard(*cardIt))
               cout << "Unfortunately you can't upgrade your card because you haven't enough money or holdings" << endl;
 
           hand.erase(cardIt);
         }
-        else{
-          if(tapHoldings(*cardIt)){
-            (*personalityIt)->expandPersonality(*cardIt, FOLLOWER);
-            money -= (*cardIt)->getCost();
-
-            if(wantToUpgrade())
-              if(!upgradeGreenCard(*cardIt))
-                cout << "Unfortunately you can't upgrade your card because you haven't enough money or holdings" << endl;
-
-            hand.erase(cardIt);
-          }
-          else
-            cout << "There weren't enough holdings to reach the requested amount of money";
-        }
+        else
+          cout << "There weren't enough holdings to reach the requested amount of money";
       }
       else
         cout << "Current personality hasn't the required honour" << endl;
@@ -184,8 +172,8 @@ void Player::buyGreenCard(int position, int personalityPos){
   else
     if(!hasMaxItems(*personalityIt))
       if((*personalityIt)->getHonour() > (*cardIt)->getMinHonour()){
-        if(isMoneyEnough(*cardIt)){
-          (*personalityIt)->expandPersonality(*cardIt, ITEM);
+        if(tapHoldings(*cardIt)){
+          (*personalityIt)->expandPersonality(*cardIt, FOLLOWER);
           money -= (*cardIt)->getCost();
 
           if(wantToUpgrade())
@@ -194,25 +182,15 @@ void Player::buyGreenCard(int position, int personalityPos){
 
           hand.erase(cardIt);
         }
-        else{
-          if(tapHoldings(*cardIt)){
-            (*personalityIt)->expandPersonality(*cardIt, ITEM);
-            money -= (*cardIt)->getCost();
-
-            if(wantToUpgrade())
-              if(!upgradeGreenCard(*cardIt))
-                cout << "Unfortunately you can't upgrade your card because you haven't enough money or holdings" << endl;
-
-            hand.erase(cardIt);
-          }
-          else
-            cout << "There weren't enough holdings to reach the requested amount of money";
-        }
+        else
+          cout << "There weren't enough holdings to reach the requested amount of money";
       }
       else
         cout << "Current personality hasn't the required honour" << endl;
     else
       cout << "Current personality has the max number of items" << endl;
+
+  // money = 0;
 }
 
 void Player::buyBlackCard(int target_province) {
@@ -250,13 +228,8 @@ void Player::buyBlackCard(int target_province) {
 }
 
 bool Player::tapHoldings(Card *CardPtr){
-  if(holdings.empty())
-    return false;
-
   unsigned tempMoney = money;
-  list<Holding *>::iterator it;
-  it = holdings.begin();
-  tempMoney += (*it)->getHarvestValue(); /* The first holding is the Stronghold */
+  list<Holding *>::iterator it = holdings.begin();
 
   while(!isMoneyEnough(CardPtr)){
     if(!(*it)->getIsTapped())
