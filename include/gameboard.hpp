@@ -4,7 +4,7 @@
 
 class GameBoard {
   unsigned int numberOfPlayers;
-  Player *players;
+  list<Player *> players;
 
   void startingPhase(Player &);
   void equipPhase(Player &);
@@ -12,8 +12,9 @@ class GameBoard {
   void economyPhase(Player &);
   void finalPhase(Player &);
   
+  void reducePlayersNumber(){ numberOfPlayers--; }
+  
 public:
-  GameBoard(){ players = nullptr; }
   ~GameBoard();
 
   void initializeGameBoard(unsigned int);
@@ -22,5 +23,6 @@ public:
 
   void gameplay(/*...*/);
 
-  inline unsigned int getNumberOfPlayers() const{ return numberOfPlayers; }
+  unsigned int getNumberOfPlayers() const{ return numberOfPlayers; }
+  list<Player *> getPlayersList() const {return players; }
 };

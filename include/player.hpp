@@ -60,7 +60,7 @@ public:
   void activatePersonalities();
   unsigned calculateAttackPoints();
   unsigned calculateDefencePoints();
-  void destroyProvince(int);
+  bool destroyProvince(int);
   void reduceProvinces() { numberOfProvinces--; }
   void destroyActPers();
   void discardActPCards(int);

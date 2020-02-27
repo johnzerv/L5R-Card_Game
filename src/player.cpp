@@ -129,11 +129,13 @@ void Player::discardSurplusFateCards(){
     }
 }
 
-bool Player::checkWinningCondition(Player *players, unsigned int playersNumber) const{
+bool Player::checkWinningCondition(list<Player *>players, unsigned int playersNumber) const{
   bool hasWon = true;
-  for (unsigned int i = 0; i < playersNumber; i++)
-    if (&players[i] != this)
-      hasWon = hasWon && !(players[i].hasProvinces());
+  list<Player *>::iterator it;
+
+  for (it = players.begin(); it != players.end(); it++)
+    if ((*it) != this)
+      hasWon = hasWon && !((*it)->hasProvinces());
 
   return (hasWon && this->hasProvinces());
 }
@@ -190,7 +192,7 @@ void Player::buyGreenCard(int position, int personalityPos){
     else
       cout << "Current personality has the max number of items" << endl;
 
-  // money = 0;
+  money = 0;
 }
 
 void Player::buyBlackCard(int target_province) {
@@ -225,6 +227,8 @@ void Player::buyBlackCard(int target_province) {
   }
   else
     cout << "There weren't enough holdings to reach the requested amount of money" << endl;
+
+  money = 0;
 }
 
 bool Player::tapHoldings(Card *CardPtr){
@@ -343,7 +347,7 @@ unsigned Player::calculateDefencePoints(){
   return totalPoints;
 }
 
-void Player::destroyProvince(int chosenProvince){
+bool Player::destroyProvince(int chosenProvince){
   list<BlackCard *>::iterator it;
   BlackCard *tempBCardPtr;
 
@@ -353,6 +357,11 @@ void Player::destroyProvince(int chosenProvince){
   
   delete(tempBCardPtr);
   provinces.erase(it);
+
+  if(provinces.empty())
+    return true;  /* Return true if player (*this) is dead */
+
+  return false;
 }
 
 void Player::destroyActPers(){

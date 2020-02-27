@@ -7,12 +7,18 @@
 using namespace std;
 
 GameBoard::~GameBoard(){
-  delete[] players;
+  list<Player *>::iterator it;
+
+  for(it = players.begin(); it != players.end(); it++)
+    delete(*it);
+  players.clear();
 }
 
 void GameBoard::initializeGameBoard(unsigned int playersNumber = 2){
   numberOfPlayers = playersNumber;
-  players = new Player[numberOfPlayers];
+
+  for(int i = 0; i < playersNumber; i++)
+    players.push_back(new Player);
 }
 
 void GameBoard::startingPhase(Player &myPlayer){
@@ -128,11 +134,15 @@ void GameBoard::battlePhase(Player &myPlayer){
        << numberOfPlayers << ") or type 'ok' to continue:"; /* prepei na meiwnetai to number of players otan pethainei kapoios paiktis */
   cin >> input;
 
-  int chosenPlayer;
+  int chosenPlayer, i;
 
   if(input != "ok"){
     stringstream temp(input);
-    temp >> chosenPlayer;
+    temp >> chosenPlayerInt;
+
+    list<Player*>::iterator playerIt, tempIt;
+    for(i = 0, playerIt = players.begin(); i < chosenPlayerInt; i++, playerIt++);
+    Player *chosenPlayer = (*playerIt); 
 
     players[chosenPlayer].printProvinces();
     int chosenProvince;
@@ -142,30 +152,37 @@ void GameBoard::battlePhase(Player &myPlayer){
 
     // No error-handling
     int attackerPoints = myPlayer.calculateAttackPoints();
-    int defencerPoints = players[chosenPlayer].calculateDefencePoints();
+    int defencerPoints = chosenPlayer->calculateDefencePoints();
 
-    if(attackerPoints - defencerPoints - players[chosenPlayer].getInitialDefence()
-                                       > players[chosenPlayer].getInitialDefence()){
-      players[chosenPlayer].destroyProvince(chosenProvince);
-      players[chosenPlayer].reduceProvinces();
-      players[chosenPlayer].destroyActPers();
+    if(attackerPoints - defencerPoints - chosenPlayer->getInitialDefence()
+                                       > chosenPlayer->getInitialDefence()){
+
+      if(chosenPlayer->destroyProvince(chosenProvince)){
+        delete(*playerIt);
+        players.erase(playerIt);
+        cout << "Player " << chosenPlayer << " is dead !" << endl << endl;
+        reducePlayersNumber();
+      }
+
+      chosenPlayer->reduceProvinces();
+      chosenPlayer->destroyActPers();
     }
     else{
       int difference = attackerPoints - defencerPoints - getInitialDefence();
 
       if(difference > 0){
-        players[chosenPlayer].destroyActPers();
+        chosenPlayer->destroyActPers();
         myPlayer.discardActPCards(difference);
         myPlayer.reduceActPersHonour();
       }
       else if(attackerPoints == defencerPoints){
         myPlayer.destroyActPers();
-        players[chosenPlayer].destroyActPers();
+        chosenPlayer->destroyActPers();
       }
       else if(difference < 0){
         myPlayer.destroyActPers();
-        players[chosenPlayer].discardActPCards(difference);
-        players[chosenPlayer].reduceActPersHonour();
+        chosenPlayer->discardActPCards(difference);
+        chosenPlayer->reduceActPersHonour();
       }
       myPlayer.battleReverberations();
     }
