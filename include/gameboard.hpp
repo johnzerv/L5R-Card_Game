@@ -4,7 +4,7 @@
 
 class GameBoard {
   unsigned int numberOfPlayers;
-  list<Player *> players;
+  std::list<Player *> players;
 
   void startingPhase(Player &);
   void equipPhase(Player &);
@@ -13,7 +13,7 @@ class GameBoard {
   void finalPhase(Player &);
   
   void reducePlayersNumber(){ numberOfPlayers--; }
-  
+
 public:
   ~GameBoard();
 
@@ -24,5 +24,5 @@ public:
   void gameplay(/*...*/);
 
   unsigned int getNumberOfPlayers() const{ return numberOfPlayers; }
-  list<Player *> getPlayersList() const {return players; }
+  std::list<Player *> getPlayersList() const {return players; }
 };

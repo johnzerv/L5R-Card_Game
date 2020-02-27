@@ -20,7 +20,8 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES){
   for(i = 0, itGreen = decks.getGreen()->begin(); i < NO_HAND_CARDS; i++, itGreen++)
     hand.push_back(*itGreen);
 
-  string StrongholdName = "Stronghold" + to_string(Stronghold::getID()+1);
+  string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
+  
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7,
                      rand() % 5, rand() % 10, rand() % 6));
 }
@@ -427,5 +428,42 @@ void Player::reduceActPersHonour(){
       it = activatedPersonalities.erase(it);  /* pops it-nth position card and sets it = it + 1 */
       it--; /* Don't skip any activated Personality */
     }
+  }
+}
+
+void Player::formMineChain(Holding *holding){
+  bool upperSet = false, subSet = false;
+
+  list<Holding *>::iterator holdIt = holdings.begin();
+
+  int newHoldingPriority = getMinePriority(holding);
+  int currentPriority;
+
+  while (holdIt != holdings.end() && !(upperSet && subSet)) {
+    if ((currentPriority = getMinePriority(*holdIt)) != 0) {
+      if (newHoldingPriority > currentPriority && !subSet
+       && (*holdIt)->getUpperHolding() == nullptr) {
+        subSet = true;
+        holding->setSubHolding(*holdIt);
+        (*holdIt)->setUpperHolding(holding);
+      }
+      else if (newHoldingPriority < currentPriority && !upperSet
+       && (*holdIt)->getSubHolding() == nullptr) {
+        upperSet = true;
+        holding->setUpperHolding(*holdIt);
+        (*holdIt)->setSubHolding(holding);
+      }
+    }
+
+    holdIt++;
+  }
+}
+
+int getMinePriority(Holding *holding) {
+  switch (holding->getHoldingType()) {
+    case MINE:          return 1;
+    case GOLD_MINE:     return 2;
+    case CRYSTAL_MINE:  return 3;
+    default:            return 0;
   }
 }

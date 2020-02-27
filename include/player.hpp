@@ -28,8 +28,6 @@ private:
   std::list <Personality *> army;
   std::list <Personality *> activatedPersonalities;
 
-  void printUntappedArmy();
-
   bool hasProvinces() const{ return !(provinces.empty()); }
  
  /* Useful methods for equipment/economy Phase */
@@ -39,19 +37,10 @@ private:
   bool hasMaxFollowers(Personality *);
   bool hasMaxItems(Personality *);
   bool wantToUpgrade() const;
+  void formMineChain(Holding *);
+  int getMinePriority(Holding *);
 
-  /*Getters/Setters*/
-  std::list <BlackCard *> getProvinces() const{ return provinces; }
-  std::list <GreenCard *> getHand() const{ return hand; }
-  std::list <Holding *> getHoldings() const{ return holdings; }
-  std::list <Personality *> getArmy() const{ return army; }
-
-  unsigned getSizeOfHand() const{ return hand.size(); }
-  unsigned getSizeOfArmy() const{ return army.size(); }
-  unsigned getMoney() const{ return money; }
-  unsigned getHonour() const{ return honour; }
-  unsigned getInitialDefence() const{ return initialDefence; }
-  unsigned getNumberOfProvinces() const { return numberOfProvinces; }
+  void printUntappedArmy(); /* Useful for activatePersonalities */
 
 public:
   Player();
@@ -83,5 +72,18 @@ public:
   void battleReverberations();
   void reduceActPersHonour();
 
-  bool checkWinningCondition(Player *, unsigned int) const;
+  bool checkWinningCondition(std::list<Player *>, unsigned int) const;
+
+  /*Getters*/
+  std::list <BlackCard *> getProvinces() const{ return provinces; }
+  std::list <GreenCard *> getHand() const{ return hand; }
+  std::list <Holding *> getHoldings() const{ return holdings; }
+  std::list <Personality *> getArmy() const{ return army; }
+
+  unsigned getSizeOfHand() const{ return hand.size(); }
+  unsigned getSizeOfArmy() const{ return army.size(); }
+  unsigned getMoney() const{ return money; }
+  unsigned getHonour() const{ return honour; }
+  unsigned getInitialDefence() const{ return initialDefence; }
+  unsigned getNumberOfProvinces() const { return numberOfProvinces; }
 };

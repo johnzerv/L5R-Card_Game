@@ -18,6 +18,8 @@ public:
   : name(nam), cost(cst), isTapped(false)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
+  virtual ~Card(){}
+
   std::string getName() const { return name; }
   unsigned getCost() const { return cost; }
   bool getIsTapped() const { return isTapped; }
@@ -166,7 +168,7 @@ private:
 public:
   Personality(std::string name, unsigned cost, unsigned att, unsigned def,
               unsigned hon)
-  : BlackCard(name, cost), attack(att), defence(def), honour(hon), isDead(false)
+  : BlackCard(name, cost), attack(att), defence(def), honour(hon)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   ~Personality(){
@@ -184,7 +186,6 @@ public:
   unsigned getAtk() const { return attack; }
   unsigned getDef() const { return defence; }
   unsigned getHonour() const { return honour; }
-  bool getIsDead() const { return isDead; }
 
   void reduceHonour(){ honour--; }
 
@@ -248,8 +249,7 @@ public:
     BlackCard::print();
     std::cout << "attack: " << attack << std::endl
               << "defence: " << defence << std::endl
-              << "honour: " << honour << std::endl
-              << "isDead: " << (isDead ? "true" : "false") << std::endl;
+              << "honour: " << honour << std::endl;
   }
 
   virtual cardType getType() const { return PERSONALITY; }
@@ -258,24 +258,51 @@ public:
 class Holding : public BlackCard {
 private:
   unsigned harvestValue;
+  Holdings holdingType;
 
   Holding *upperHolding;
   Holding *subHolding;
 
 public:
-  Holding(std::string name, unsigned cost, unsigned harv)
-  : BlackCard(name, cost), harvestValue(harv), upperHolding(nullptr),
-    subHolding(nullptr)
+  Holding(std::string name, unsigned cost, unsigned harv, Holdings holdType)
+  : BlackCard(name, cost), harvestValue(harv), holdingType(holdType),
+    upperHolding(nullptr), subHolding(nullptr)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
+
+  unsigned getHarvestValue() const { return harvestValue; }
+  Holdings getHoldingType() const { return holdingType; }
 
   Holding * getUpperHolding() const { return upperHolding; }
   Holding * getSubHolding() const { return subHolding; }
 
-  /* Change this so that it will return the right amount, if chains exist */
+  // Calculates possible bonuses, if a chain exists
   unsigned tap() {
     Card::tap();
-    return harvestValue;
+
+    if (holdingType == MINE && upperHolding != nullptr)
+      return harvestValue + 2; // MINE <-> GOLD_MINE 
+
+    if (holdingType == GOLD_MINE) {
+      if (subHolding != nullptr && upperHolding != nullptr)
+        return harvestValue * 2; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
+      if (subHolding != nullptr)
+        return harvestValue + 4; // MINE <-> GOLD_MINE
+      if (upperHolding != nullptr)
+        return harvestValue + 5; // GOLD_MINE <-> CRYSTAL_MINE
+    }
+
+    if (holdingType == CRYSTAL_MINE) {
+      if (subHolding != nullptr && subHolding->subHolding != nullptr)
+        return harvestValue * 3; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
+      if (subHolding != nullptr)
+        return harvestValue * 2; // GOLD_MINE <-> CRYSTAL_MINE
+    }
+
+    return harvestValue; // No chains exist
   }
+
+  void setUpperHolding(Holding *upperHold) { upperHolding = upperHold; }
+  void setSubHolding(Holding *subHold) { subHolding = subHold; }
 
   virtual void print() const {
     std::cout << "Holding - ";
@@ -298,24 +325,26 @@ public:
 
 class Stronghold : public Holding {
 private:
-  static unsigned int ID;
+  static unsigned ID;
   unsigned honour;
   unsigned initialDefence;
 
 public:
   Stronghold(std::string name, unsigned cost, unsigned hnr, unsigned harv,
              unsigned initDef)
-  : Holding(name, cost, harv), honour(hnr), initialDefence(initDef)
+  : Holding(name, cost, harv, STRONGHOLD), honour(hnr), initialDefence(initDef)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   virtual void print() const {
     std::cout << "Stronghold - ";
     Holding::print();
-    std::cout << "honour: " << honour << std::endl
-              << "initialDefence: " << initialDefence << std::endl;
+    std::cout << "Honour: " << honour << std::endl
+              << "Initial defence: " << initialDefence << std::endl;
   }
 
-  static unsigned int getID() { return ID; }
+  static unsigned nextID() { return ++ID; }
 
-  cardType getType() const{ return HOLDING; };  
+  cardType getType() const { return HOLDING; };  
 };
+
+unsigned Stronghold::ID = 0;

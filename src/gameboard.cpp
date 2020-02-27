@@ -134,7 +134,7 @@ void GameBoard::battlePhase(Player &myPlayer){
        << numberOfPlayers << ") or type 'ok' to continue:"; /* prepei na meiwnetai to number of players otan pethainei kapoios paiktis */
   cin >> input;
 
-  int chosenPlayer, i;
+  int chosenPlayerInt, i;
 
   if(input != "ok"){
     stringstream temp(input);
@@ -144,9 +144,9 @@ void GameBoard::battlePhase(Player &myPlayer){
     for(i = 0, playerIt = players.begin(); i < chosenPlayerInt; i++, playerIt++);
     Player *chosenPlayer = (*playerIt); 
 
-    players[chosenPlayer].printProvinces();
+    chosenPlayer->printProvinces();
     int chosenProvince;
-    cout << endl << "Choose a province to attack (0 - " << players[chosenPlayer].getNumberOfProvinces() << "): ";
+    cout << endl << "Choose a province to attack (0 - " << chosenPlayer->getNumberOfProvinces() << "): ";
     cin >> chosenProvince;
     cout << endl << endl;
 
@@ -168,7 +168,7 @@ void GameBoard::battlePhase(Player &myPlayer){
       chosenPlayer->destroyActPers();
     }
     else{
-      int difference = attackerPoints - defencerPoints - getInitialDefence();
+      int difference = attackerPoints - defencerPoints - chosenPlayer->getInitialDefence();
 
       if(difference > 0){
         chosenPlayer->destroyActPers();
