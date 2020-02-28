@@ -28,3 +28,5 @@ public:
   int getNumberOfPlayers() { return numberOfPlayers; }
   std::list<Player *> getPlayersList() { return players; }
 };
+
+bool comparePlayers(const Player *a, const Player *b);

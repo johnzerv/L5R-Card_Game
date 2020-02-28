@@ -24,6 +24,54 @@ void GameBoard::initializeGameBoard(int playersNumber = 2) {
     players.push_back(new Player);
 }
 
+void GameBoard::printGameStatistics() {
+  list<Player *>::iterator playerIt = players.begin();
+
+  for (int i = 0; i < numberOfPlayers; i++, playerIt++) {
+    cout << "\nPrinting stats for player " << i << endl;
+
+    (*playerIt)->printHoldings();
+    (*playerIt)->printHand();
+    (*playerIt)->printArena();
+    (*playerIt)->printProvinces();
+    (*playerIt)->printArmy();
+  }
+}
+
+bool comparePlayers(const Player *a, const Player *b) {
+  return a->getHonour() > b->getHonour();
+}
+
+void GameBoard::gameplay() {
+  players.sort(comparePlayers);
+
+  bool gameover = false;
+
+  while (!gameover) {
+    list<Player *>::iterator playerIt = players.begin();
+
+    int player_no = 1;
+    while (playerIt != players.end()) {
+
+      startingPhase(**playerIt);
+      equipPhase(**playerIt);
+      battlePhase(**playerIt);
+
+      if ((*playerIt)->checkWinningCondition(players)) {
+        cout << "Player " << player_no << " has won!" << endl;
+        gameover = true;
+        break;
+      }
+
+      economyPhase(**playerIt);
+      finalPhase(**playerIt);
+
+      playerIt++;
+      player_no++;
+    }
+  }
+}
+
 void GameBoard::startingPhase(Player &player) {
   cout << "\n-------- STARTING PHASE ----------\n" << endl;
 
@@ -93,7 +141,7 @@ void GameBoard::economyPhase(Player &player) {
   player.revealProvinces();
   player.printProvinces();
 
-  std::list<BlackCard *> provinces = player.getProvinces();
+  list<BlackCard *> provinces = player.getProvinces();
   bool available[4] = {0}; // available[i] -> i-th province can be bought
 
   list<BlackCard*> :: iterator itProvince = provinces.begin();
@@ -178,7 +226,7 @@ void GameBoard::battlePhase(Player &player) {
       chosenPlayer->reduceProvinces();
       chosenPlayer->destroyActPers();
     }
-    else{
+    else {
       int difference = attackerPoints - defencerPoints
                       - chosenPlayer->getInitialDefence();
 

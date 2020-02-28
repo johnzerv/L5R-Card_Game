@@ -76,7 +76,7 @@ public:
   int getSizeOfHand() { return hand.size(); }
   int getSizeOfArmy() { return army.size(); }
   int getMoney() { return money; }
-  int getHonour() { return honour; }
+  int getHonour() const { return honour; }
   int getInitialDefence() { return initialDefence; }
   int getNumberOfProvinces()  { return numberOfProvinces; }
 };
