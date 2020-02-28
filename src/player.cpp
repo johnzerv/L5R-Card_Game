@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-#include "player.hpp"
+#include "../include/player.hpp"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ Player::~Player() {
   BlackCard *tempBCardPtr;
 
   while (blackIt != provinces.end()) {
-    if ((tempBCardPtr = dynamic_cast<Personality *> *blackIt) == nullptr)
+    if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
       tempBCardPtr = (Holding *) *blackIt;
 
     delete tempBCardPtr;
@@ -70,7 +70,7 @@ Player::~Player() {
   GreenCard *tempGCardPtr;
 
   while (greenIt != hand.end()) {
-    if ((tempGCardPtr = dynamic_cast<Item *> *greenIt) == nullptr)
+    if ((tempGCardPtr = dynamic_cast<Item *> (*greenIt)) == nullptr)
       tempGCardPtr = (Follower *) *greenIt;
 
     delete tempGCardPtr;
@@ -293,7 +293,7 @@ bool Player::tapHoldings(int cost) {
 
     while (holdIt != holdings.end()) {
       (*holdIt)->untap();
-      tempIt++;
+      holdIt++;
     }
 
     return false; // Signal that the purchase failed
@@ -321,7 +321,7 @@ bool Player::wantToUpgrade() {
     cout << "Upgrade new item (y/n)? ";
     cin >> input;
     cout << endl;
-  } while (input != "y" && input != "n")
+  } while (input != "y" && input != "n");
 
   return (input == "y");
 }
@@ -387,7 +387,7 @@ bool Player::destroyProvince(int chosenProvince) {
   // Find a pointer to the target card
   for (int i = 0; i < chosenProvince; i++, blackIt++);
 
-  if ((tempBCardPtr = dynamic_cast<Personality *> *blackIt) == nullptr)
+  if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
     tempBCardPtr = (Holding *) *blackIt;
   
   delete tempBCardPtr;
@@ -483,7 +483,7 @@ void Player::formMineChain(Holding *holding) {
 
   list<Holding *>::iterator holdIt = holdings.begin();
 
-  int newHoldingPosition = getMineType(holding);
+  int newHoldingType = getMineType(holding);
   int currentType;
 
   // For each holding in the "holdings" list, check:

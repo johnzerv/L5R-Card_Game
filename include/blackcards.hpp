@@ -75,5 +75,5 @@ public:
 class GiftsFavour : public Holding {
 public:
   GiftsFavour(std::string name)
-  : Holding(name, 2, 2, GIFTS_FAVOUR) {}
+  : Holding(name, 2, 2, GIFT_FAVOUR) {}
 };

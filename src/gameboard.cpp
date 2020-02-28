@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 
-#include "gameboard.hpp"
+#include "../include/gameboard.hpp"
 
 using namespace std;
 

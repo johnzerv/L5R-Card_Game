@@ -184,7 +184,7 @@ public:
 
     while (itemIt != items.end()) {
       (*itemIt)->detach();
-      itemIt++
+      itemIt++;
     }
 
     items.clear();
@@ -213,7 +213,7 @@ public:
     int totalPoints = attack;
 
     std::list<Item *>::iterator itemIt = items.begin();
-    for (itemIt != items.end()) {
+    while (itemIt != items.end()) {
       totalPoints += (*itemIt)->getAtkBonus();
 
       if ((*itemIt)->getIsUpgraded())
@@ -268,8 +268,8 @@ public:
     BlackCard::print();
     std::cout << "Attack: " << attack << std::endl
               << "Defence: " << defence << std::endl
-              << "Honour: " << honour << std::endl
-              << "Is dead: " << (isDead ? "true" : "false") << std::endl;
+              << "Honour: " << honour << std::endl;
+  }
 
   virtual cardType getType() { return PERSONALITY; }
 };

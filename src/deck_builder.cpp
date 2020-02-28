@@ -77,7 +77,7 @@ void DeckBuilder::createDynastyDeck() {
   // Create holdings
   for (i = 0; i < NO_PLAIN; i++)
     black->push_back(new Plain("Rice Fields"));
-  for (i = 0; i < NO_FARMS; i++)
+  for (i = 0; i < NO_FARM_LANDS; i++)
     black->push_back(new Farmland("Fish Farms"));
   for (i = 0; i < NO_MINE; i++)
     black->push_back(new Mine("Ashio Copper Mine"));
@@ -85,7 +85,7 @@ void DeckBuilder::createDynastyDeck() {
     black->push_back(new GoldMine("Konomai Gold Mine"));
   for (i = 0; i < NO_CRYSTAL_MINE; i++)
     black->push_back(new CrystalMine("Ichinokawa Crystal Mine"));
-  for (i = 0; i < NO_SOLO; i++)
+  for (i = 0; i < NO_GIFT_FAVOURS; i++)
     black->push_back(new GiftsFavour("Gifts and Favors"));
 }
 
@@ -123,7 +123,7 @@ void DeckBuilder::deckShuffler(list<GreenCard *> *green) {
   green->clear();
 
   vector<GreenCard *>::iterator greenItV = vect.begin();
-  for (greenItV != vect.end()) {
+  while (greenItV != vect.end()) {
     green->push_back(*greenItV);
     greenItV++;
   }
