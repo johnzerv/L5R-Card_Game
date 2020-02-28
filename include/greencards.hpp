@@ -1,13 +1,14 @@
-// #ifndef GREENCARDS
-// #define GREENCARDS
 #pragma once
 
 #include <string>
 
 #include "card.hpp"
-#include "../auxiliary_files/DeckBuilder.hpp"
 
-/* Follower types */
+// The constructor arguments corresponding to a card's stats are
+// filled arbitrarily, according to the given .txt files
+
+// Follower types
+
 class Footsoldier : public Follower {
 public:
   Footsoldier(std::string name)
@@ -44,7 +45,8 @@ public:
   : Follower(name, 8, 8, 8, 6, "Bushido", 3, 8) {}
 };
 
-/* Item types */
+// Item types
+
 class Katana : public Item {
 public:
   Katana(std::string name)
@@ -74,5 +76,3 @@ public:
   Wakizashi(std::string name)
   : Item(name, 8, 5, 5, 3, "Wakizashi", 3, 3, 8) {}
 };
-
-// #endif

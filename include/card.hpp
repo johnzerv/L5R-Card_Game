@@ -4,279 +4,298 @@
 #include <string>
 #include <list>
 
-#include "enums.hpp"
+#include "constants.hpp"
 
-/* Abstract class */
+// Abstract class!
+
 class Card {
 private:
   std::string name;
-  unsigned cost;
+  int cost;
   bool isTapped;
 
 public:
-  Card(std::string nam, unsigned cst)
+  Card(std::string nam, int cst)
   : name(nam), cost(cst), isTapped(false)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  virtual ~Card(){}
+  virtual ~Card() {}
 
-  std::string getName() const { return name; }
-  unsigned getCost() const { return cost; }
-  bool getIsTapped() const { return isTapped; }
+  std::string getName() { return name; }
+  int getCost() { return cost; }
+  bool getIsTapped() { return isTapped; }
 
   void untap() { isTapped = false; }
   void tap() { isTapped = true; }
 
-  virtual void print() const {
+  virtual void print() {
     std::cout << "Card:" << std::endl
               << "Name: " << name << std::endl
               << "Cost: " << cost << std::endl
-              << "isTapped: " << (isTapped ? "true" : "false") << std::endl;
+              << "Is tapped: " << (isTapped ? "true" : "false") << std::endl;
   }
-  
-  virtual cardType getType() const = 0;
+
+  virtual cardType getType() = 0;
 };
 
-/* Abstract class */
+// Abstract class!
+
 class GreenCard : public Card {
 private:
-  unsigned attackBonus;
-  unsigned defenceBonus;
-  unsigned minimumHonour;
+  int attackBonus;
+  int defenceBonus;
+  int minimumHonour;
   std::string cardText;
 
   bool isUpgraded;
-  unsigned effectBonus;
-  unsigned effectCost;
+  int effectBonus;
+  int effectCost;
 
 public:
-  GreenCard(std::string name, unsigned cost, unsigned attBonus,
-            unsigned defBonus, unsigned minHonour, std::string cardTxt,
-            unsigned effBonus, unsigned effCost)
+  GreenCard(std::string name, int cost, int attBonus, int defBonus,
+            int minHonour, std::string cardTxt, int effBonus, int effCost)
   : Card(name, cost), attackBonus(attBonus), defenceBonus(defBonus),
     minimumHonour(minHonour), cardText(cardTxt), isUpgraded(false),
     effectBonus(effBonus), effectCost(effCost)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  unsigned getAtkBonus() const { return attackBonus; }
-  unsigned getDefBonus() const { return defenceBonus; }
-  unsigned getMinHonour() const { return minimumHonour; }
-  std::string getCardTxt() const { return cardText; }
+  int getAtkBonus() { return attackBonus; }
+  int getDefBonus() { return defenceBonus; }
+  int getMinHonour() { return minimumHonour; }
+  std::string getCardTxt() { return cardText; }
 
-  bool getIsUpgraded()const{ return isUpgraded; }
-  unsigned getEffectBonus() const { return effectBonus; }
-  unsigned getEffectCost() const { return effectCost; }
+  bool getIsUpgraded() { return isUpgraded; }
+  int getEffectBonus() { return effectBonus; }
+  int getEffectCost() { return effectCost; }
 
-  void Upgrade(){ isUpgraded = true; }
+  void Upgrade() { isUpgraded = true; }
 
-  virtual void print() const {
-    std::cout << "GreenCard - ";
+  virtual void print() {
+    std::cout << "Green card - ";
     Card::print();
-    std::cout << "attackBonus: " << attackBonus << std::endl
-              << "defenceBonus: " << defenceBonus << std::endl
-              << "minimumHonour: " << minimumHonour << std::endl
-              << "cardText: " << cardText << std::endl
-              << "effectBonus: " << effectBonus << std::endl
-              << "effectCost: " << effectCost << std::endl;
+    std::cout << "Attack bonus: " << attackBonus << std::endl
+              << "Defence bonus: " << defenceBonus << std::endl
+              << "Minimum honour: " << minimumHonour << std::endl
+              << "Card text: " << cardText << std::endl
+              << "Effect bonus: " << effectBonus << std::endl
+              << "Effect cost: " << effectCost << std::endl;
   }
 
-  virtual cardType getType() const = 0;
+  virtual cardType getType() = 0;
 };
 
 class Follower : public GreenCard {
 public:
-  Follower(std::string name, unsigned cost, unsigned attBonus,
-           unsigned defBonus, unsigned minHonour, std::string cardTxt,
-           unsigned effBonus, unsigned effCost)
+  Follower(std::string name, int cost, int attBonus, int defBonus,
+           int minHonour, std::string cardTxt, int effBonus, int effCost)
   : GreenCard(name, cost, attBonus, defBonus, minHonour, cardTxt, effBonus,
               effCost)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  virtual void print() const {
+  virtual void print() {
     std::cout << "Follower - ";
     GreenCard::print();
   }
 
-  void detach(){ delete(this); }
+  void detach() { delete this; }
 
-  virtual cardType getType() const { return FOLLOWER; }
+  virtual cardType getType() { return FOLLOWER; }
 };
 
 class Item : public GreenCard {
 private:
-  unsigned durability;
+  int durability;
 
 public:
-  Item(std::string name, unsigned cost, unsigned attBonus, unsigned defBonus,
-       unsigned minHonour, std::string cardTxt, unsigned effBonus,
-       unsigned effCost, unsigned durab)
+  Item(std::string name, int cost, int attBonus, int defBonus, int minHonour,
+       std::string cardTxt, int effBonus, int effCost, int durab)
   : GreenCard(name, cost, attBonus, defBonus, minHonour, cardTxt, effBonus,
               effCost),
     durability(durab)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  unsigned getDurability() const { return durability; }
+  int getDurability() { return durability; }
   void reduceDurability() { durability--; }
-  void detach(){ delete(this); }
+  void detach() { delete this; }
 
-  virtual void print() const {
+  virtual void print() {
     std::cout << "Item - ";
     GreenCard::print();
-    std::cout << "durability: " << durability << std::endl;
+    std::cout << "Durability: " << durability << std::endl;
   }
 
-  virtual cardType getType() const { return ITEM; }
+  virtual cardType getType() { return ITEM; }
 };
 
-/* Abstract class */
+// Abstract class!
+
 class BlackCard : public Card {
 private:
   bool isRevealed;
 
 public:
-  BlackCard(std::string name, unsigned cost)
+  BlackCard(std::string name, int cost)
   : Card(name, cost), isRevealed(false)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  virtual ~BlackCard(){}
-
-  bool getRevealed() const { return isRevealed; }
+  bool getRevealed() { return isRevealed; }
 
   void setRevealedFalse() { isRevealed = false; }
   void setRevealedTrue() { isRevealed = true; }
 
-  virtual void print() const {
+  virtual void print() {
      std::cout << "BlackCard - ";
      Card::print();
-     std::cout << "isRevealed: " << (isRevealed ? "true" : "false") << std::endl;
+     std::cout << "Is revealed: " << (isRevealed ? "true" : "false")
+               << std::endl;
   }
 
-  virtual cardType getType() const = 0;
+  virtual cardType getType() = 0;
 };
-
-#include "../auxiliary_files/DeckBuilder.hpp"
 
 class Personality : public BlackCard {
 private:
-  unsigned attack;
-  unsigned defence;
-  unsigned honour;
+  int attack;
+  int defence;
+  int honour;
 
-  std::list <Follower *> followers;
-  std::list <Item *> items;
+  std::list<Follower *> followers;
+  std::list<Item *> items;
 
 public:
-  Personality(std::string name, unsigned cost, unsigned att, unsigned def,
-              unsigned hon)
+  Personality(std::string name, int cost, int att, int def, int hon)
   : BlackCard(name, cost), attack(att), defence(def), honour(hon)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  ~Personality(){
-    std::list<Follower *>::iterator it1;
-    for(it1 = followers.begin(); it1 != followers.end(); it1++)
-      (*it1)->detach();
+  ~Personality() {
+
+    // Step 1: Detach all followers
+    std::list<Follower *>::iterator followerIt = followers.begin();
+
+    while (followerIt != followers.end()) {
+      (*followerIt)->detach();
+      followerIt++;
+    }
+
     followers.clear();
 
-    std::list<Item *>::iterator it2;
-    for(it2 = items.begin(); it2 != items.end(); it2++)
-      (*it2)->detach();
+    // Step 2: Detach all items
+    std::list<Item *>::iterator itemIt = items.begin();
+
+    while (itemIt != items.end()) {
+      (*itemIt)->detach();
+      itemIt++
+    }
+
     items.clear();
   }
 
-  unsigned getAtk() const { return attack; }
-  unsigned getDef() const { return defence; }
-  unsigned getHonour() const { return honour; }
+  int getAtk() { return attack; }
+  int getDef() { return defence; }
+  int getHonour() { return honour; }
 
-  void reduceHonour(){ honour--; }
+  void reduceHonour() { honour--; }
 
-  std::list <Follower *> getFollowers() const { return followers; }
-  std::list <Item *> getItems() const { return items; }
+  std::list<Follower *> getFollowers() { return followers; }
+  std::list<Item *> getItems() { return items; }
 
-  bool hasMaxFollowers() const{ return followers.size() <= MAX_FOLLOWERS; }
-  bool hasMaxItems() const{ return items.size() <= MAX_ITEMS; }
+  bool hasMaxFollowers() { return followers.size() <= MAX_FOLLOWERS; }
+  bool hasMaxItems() { return items.size() <= MAX_ITEMS; }
 
-  void expandPersonality(Card *CardPtr, unsigned type) {
-    if(type == FOLLOWER)
+  void expandPersonality(Card *CardPtr, int type) {
+    if (type == FOLLOWER)
       followers.push_back((Follower *) CardPtr);
-    else if(type == ITEM)
+    else if (type == ITEM)
       items.push_back((Item *) CardPtr);
   }
 
-  unsigned calculateAttackPoints(){
-    unsigned totalPoints = attack;
-    std::list<Item *>::iterator it1;
+  int calculateAttackPoints() {
+    int totalPoints = attack;
 
-    for(it1 = items.begin(); it1 != items.end(); it1++){
-      totalPoints += (*it1)->getAtkBonus();
-      if((*it1)->getIsUpgraded())
-        totalPoints += (*it1)->getEffectBonus();
+    std::list<Item *>::iterator itemIt = items.begin();
+    for (itemIt != items.end()) {
+      totalPoints += (*itemIt)->getAtkBonus();
+
+      if ((*itemIt)->getIsUpgraded())
+        totalPoints += (*itemIt)->getEffectBonus();
+
+      itemIt++;
     }
 
-    std::list<Follower *>::iterator it2;
-    for(it2 = followers.begin(); it2 != followers.end(); it2++){
-      totalPoints += (*it2)->getAtkBonus();
-      if(((*it2)->getIsUpgraded()))
-        totalPoints += (*it2)->getEffectBonus();
-    }
+    std::list<Follower *>::iterator followerIt = followers.begin();
+    while (followerIt != followers.end()) {
+      totalPoints += (*followerIt)->getAtkBonus();
 
-    return totalPoints;
-  }
+      if (((*followerIt)->getIsUpgraded()))
+        totalPoints += (*followerIt)->getEffectBonus();
 
-  unsigned calculateDefencePoints(){
-    unsigned totalPoints = attack;
-    std::list<Item *>::iterator it1;
-
-    for(it1 = items.begin(); it1 != items.end(); it1++){
-      totalPoints += (*it1)->getDefBonus();
-      if((*it1)->getIsUpgraded())
-        totalPoints += (*it1)->getEffectBonus();
-    }
-
-    std::list<Follower *>::iterator it2;
-    for(it2 = followers.begin(); it2 != followers.end(); it2++){
-      totalPoints += (*it2)->getDefBonus();
-      if(((*it2)->getIsUpgraded()))
-        totalPoints += (*it2)->getEffectBonus();
+      followerIt++;
     }
 
     return totalPoints;
   }
 
-  void performSeppuku(){ delete(this); }
+  int calculateDefencePoints() {
+    int totalPoints = defence;
 
-  virtual void print() const {
+    std::list<Item *>::iterator itemIt = items.begin();
+    while (itemIt != items.end()) {
+      totalPoints += (*itemIt)->getDefBonus();
+
+      if ((*itemIt)->getIsUpgraded())
+        totalPoints += (*itemIt)->getEffectBonus();
+
+      itemIt++;
+    }
+
+    std::list<Follower *>::iterator followerIt = followers.begin();
+    while (followerIt != followers.end()) {
+      totalPoints += (*followerIt)->getDefBonus();
+
+      if (((*followerIt)->getIsUpgraded()))
+        totalPoints += (*followerIt)->getEffectBonus();
+
+      followerIt++;
+    }
+
+    return totalPoints;
+  }
+
+  void performSeppuku() { delete this; }
+
+  virtual void print() {
     std::cout << "Personality - ";
     BlackCard::print();
-    std::cout << "attack: " << attack << std::endl
-              << "defence: " << defence << std::endl
-              << "honour: " << honour << std::endl;
-  }
+    std::cout << "Attack: " << attack << std::endl
+              << "Defence: " << defence << std::endl
+              << "Honour: " << honour << std::endl
+              << "Is dead: " << (isDead ? "true" : "false") << std::endl;
 
-  virtual cardType getType() const { return PERSONALITY; }
+  virtual cardType getType() { return PERSONALITY; }
 };
 
 class Holding : public BlackCard {
 private:
-  unsigned harvestValue;
-  Holdings holdingType;
+  int harvestValue;
+  Holdings holdingType; // e.g. PLAIN, MINE, etc. (see constants.h)
 
   Holding *upperHolding;
   Holding *subHolding;
 
 public:
-  Holding(std::string name, unsigned cost, unsigned harv, Holdings holdType)
+  Holding(std::string name, int cost, int harv, Holdings holdType)
   : BlackCard(name, cost), harvestValue(harv), holdingType(holdType),
     upperHolding(nullptr), subHolding(nullptr)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  unsigned getHarvestValue() const { return harvestValue; }
-  Holdings getHoldingType() const { return holdingType; }
+  int getHarvestValue() { return harvestValue; }
+  Holdings getHoldingType() { return holdingType; }
 
-  Holding * getUpperHolding() const { return upperHolding; }
-  Holding * getSubHolding() const { return subHolding; }
+  Holding * getUpperHolding() { return upperHolding; }
+  Holding * getSubHolding() { return subHolding; }
 
   // Calculates possible bonuses, if a chain exists
-  unsigned tap() {
+  int tap() {
     Card::tap();
 
     if (holdingType == MINE && upperHolding != nullptr)
@@ -304,47 +323,47 @@ public:
   void setUpperHolding(Holding *upperHold) { upperHolding = upperHold; }
   void setSubHolding(Holding *subHold) { subHolding = subHold; }
 
-  virtual void print() const {
+  virtual void print() {
     std::cout << "Holding - ";
     BlackCard::print();
-    std::cout << "harvestValue: " << harvestValue << std::endl;
+    std::cout << "Harvest value: " << harvestValue << std::endl;
 
     if (upperHolding != nullptr) {
-      std::cout << "upperHolding - ";
+      std::cout << "Upper holding - ";
       upperHolding->print();
     }
 
     if (subHolding != nullptr) {
-      std::cout << "subHolding - ";
+      std::cout << "Sub holding - ";
       upperHolding->print();
     }
   }
 
-  virtual cardType getType() const { return HOLDING; }
+  virtual cardType getType() { return HOLDING; }
 };
 
 class Stronghold : public Holding {
 private:
-  static unsigned ID;
-  unsigned honour;
-  unsigned initialDefence;
+  static int ID;
+
+  int honour;
+  int initialDefence;
 
 public:
-  Stronghold(std::string name, unsigned cost, unsigned hnr, unsigned harv,
-             unsigned initDef)
+  Stronghold(std::string name, int cost, int hnr, int harv, int initDef)
   : Holding(name, cost, harv, STRONGHOLD), honour(hnr), initialDefence(initDef)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
-  virtual void print() const {
+  virtual void print() {
     std::cout << "Stronghold - ";
     Holding::print();
     std::cout << "Honour: " << honour << std::endl
               << "Initial defence: " << initialDefence << std::endl;
   }
 
-  static unsigned nextID() { return ++ID; }
+  static int nextID() { return ++ID; }
 
-  cardType getType() const { return HOLDING; };  
+  virtual cardType getType() { return HOLDING; }
 };
 
-unsigned Stronghold::ID = 0;
+int Stronghold::ID = 0;

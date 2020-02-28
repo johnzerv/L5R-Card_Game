@@ -1,9 +1,11 @@
 #pragma once 
 
-#include "../include/player.hpp"
+#include <list>
+
+#include "player.hpp"
 
 class GameBoard {
-  unsigned int numberOfPlayers;
+  int numberOfPlayers;
   std::list<Player *> players;
 
   void startingPhase(Player &);
@@ -12,17 +14,17 @@ class GameBoard {
   void economyPhase(Player &);
   void finalPhase(Player &);
   
-  void reducePlayersNumber(){ numberOfPlayers--; }
+  void reducePlayersNumber() { numberOfPlayers--; }
 
 public:
   ~GameBoard();
 
-  void initializeGameBoard(unsigned int);
-
+  // Basic functionalities of our game
+  void initializeGameBoard(int);
   void printGameStatistics();
-
   void gameplay(/*...*/);
 
-  unsigned int getNumberOfPlayers() const{ return numberOfPlayers; }
-  std::list<Player *> getPlayersList() const {return players; }
+  // Getters
+  int getNumberOfPlayers() { return numberOfPlayers; }
+  std::list<Player *> getPlayersList() { return players; }
 };
