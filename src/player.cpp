@@ -7,447 +7,498 @@
 
 using namespace std;
 
-Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES){
+Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
   decks.createFateDeck();
   decks.createDynastyDeck();
 
-  unsigned int i;  // Temp variable
-  list <BlackCard*> :: iterator itBlack;
-  for(i = 0, itBlack = decks.getBlack()->begin(); i < numberOfProvinces; i++, itBlack++)
-    provinces.push_back(*itBlack);
+  // Initialize the player's "provinces", "hand" and "holdings" lists
 
-  list <GreenCard*> :: iterator itGreen;
-  for(i = 0, itGreen = decks.getGreen()->begin(); i < NO_HAND_CARDS; i++, itGreen++)
-    hand.push_back(*itGreen);
+  list<BlackCard*>::iterator blackIt = decks.getBlack()->begin();
+  for (int i = 0; i < numberOfProvinces; i++, blackIt++)
+    provinces.push_back(*blackIt);
+
+  list<GreenCard*>::iterator greenIt = decks.getGreen()->begin();
+  for (int i = 0; i < NO_HAND_CARDS; i++, greenIt++)
+    hand.push_back(*greenIt);
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
-  
-  holdings.push_back(new Stronghold(StrongholdName, rand() % 7,
-                     rand() % 5, rand() % 10, rand() % 6));
+  holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
+                     rand() % 10, rand() % 6));
 }
 
-Player::~Player(){
-  list <BlackCard *>::iterator it1;
+// TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
+// CARDS ARE DELETED IN MULTIPLE POINTS IN THE PROGRAM
+
+Player::~Player() {
+
+  // Step 1: deallocate the provinces (cards) of the player
+  list<BlackCard *>::iterator blackIt = provinces.begin();
   BlackCard *tempBCardPtr;
-  for(it1 = provinces.begin(); it1 != provinces.end(); it1++){
-    if((tempBCardPtr = dynamic_cast<Personality *>(*it1)) == nullptr)
-      tempBCardPtr = ((Holding *)(*it1));
-    delete (tempBCardPtr);
+
+  while (blackIt != provinces.end()) {
+    if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
+      tempBCardPtr = (Holding *) *blackIt;
+
+    delete tempBCardPtr;
+    blackIt++;
   }
+
   provinces.clear();
 
-  list <Personality *>::iterator it2;
-  for(it2 = army.begin(); it2 != army.end(); it2++)
-    delete (*it2);
+  // Step 2: deallocate the army (cards) of the player
+  list<Personality *>::iterator persIt = army.begin();
+
+  while (persIt != army.end()) {
+    delete *persIt;
+    persIt++;
+  }
+
   army.clear();
 
-  for(it2 = activatedPersonalities.begin(); it2 != activatedPersonalities.end(); it2++)
-    delete (*it2);
+  // Step 3: deallocate the activated personalities (cards) of the player
+  persIt = activatedPersonalities.begin();
+
+  while (persIt != activatedPersonalities.end()) {
+    delete *persIt; // CAREFUL, COULD BE CAUSING A DOUBLE FREE!
+    persIt++;
+  }
+
   activatedPersonalities.clear();
 
-  list <GreenCard *>::iterator it3;
+  // Step 4: deallocate the hand (cards) of the player
+  list<GreenCard *>::iterator greenIt = hand.begin();
   GreenCard *tempGCardPtr;
-  for(it3 = hand.begin(); it3 != hand.end(); it3++){
-    if((tempGCardPtr = dynamic_cast<Item *>(*it1)) == nullptr)
-      tempGCardPtr = ((Follower *)(*it1));
-    delete (tempGCardPtr);
+
+  while (greenIt != hand.end()) {
+    if ((tempGCardPtr = dynamic_cast<Item *> (*greenIt)) == nullptr)
+      tempGCardPtr = (Follower *) *greenIt;
+
+    delete tempGCardPtr;
+    greenIt++;
   }
+
   hand.clear();
 }
 
-void Player::untapEverything(){
-  list <Holding *>::iterator it1;
-  for(it1 = holdings.begin(); it1 != holdings.end(); it1++)
-    (*it1)->untap();
+void Player::untapEverything() {
+  list<Holding *>::iterator holdIt = holdings.begin();
 
-  list <Personality *>::iterator it2;
-  for(it2 = army.begin(); it2 != army.end(); it2++)
-    (*it2)->untap();
+  while (holdIt != holdings.end()) {
+    (*holdIt)->untap();
+    holdIt++;
+  }
+
+  list<Personality *>::iterator persIt = army.begin();
+
+  while (persIt != army.end()) {
+    (*persIt)->untap();
+    persIt++;
+  }
 }
 
-void Player::drawFateCard(){
-  list<GreenCard *>::iterator it = decks.getGreen()->begin();
-  hand.push_back(*it); /* Add the new GreenCard to hand */
-  decks.getGreen()->pop_front();  /* Remove the drawn card from FateDeck */
+void Player::drawFateCard() {
+  list<GreenCard *>::iterator greenIt = decks.getGreen()->begin();
+  hand.push_back(*greenIt); // Add the new GreenCard to hand
+  decks.getGreen()->pop_front(); // Remove the drawn card from FateDeck
 }
 
 void Player::drawDynastyCard() {
-  list<BlackCard *>::iterator it = decks.getBlack()->begin();
-  provinces.push_back(*it); /* Add the new BlackCard to provinces */
-  decks.getBlack()->pop_front();  /* Remove the drawn card from DynastyDeck */
+  list<BlackCard *>::iterator blackIt = decks.getBlack()->begin();
+  provinces.push_back(*blackIt); // Add the new BlackCard to provinces
+  decks.getBlack()->pop_front(); // Remove the drawn card from DynastyDeck
 }
 
-void Player::revealProvinces(){
-  list <BlackCard *>::iterator it;
+void Player::revealProvinces() {
+  list<BlackCard *>::iterator blackIt = provinces.begin();
 
-  for(it = provinces.begin(); it != provinces.end(); ++it)
-    (*it)->setRevealedTrue();
+  while (blackIt != provinces.end()) {
+    (*blackIt)->setRevealedTrue();
+    blackIt++;
+  }
 }
 
-void Player::printHoldings(){
-  list <Holding *>::iterator it;
+void Player::printHoldings() {
+  list<Holding *>::iterator holdIt = holdings.begin();
 
-  for(it = holdings.begin(); it != holdings.end(); ++it)
-    (*it)->print();
+  while (holdIt != holdings.end()) {
+    (*holdIt)->print();
+    holdIt++;
+  }
 }
 
-void Player::printHand(){
-  list <GreenCard *>::iterator it;
-  for(it = hand.begin(); it != hand.end(); ++it)
-    (*it)->print();
+void Player::printHand() {
+  list<GreenCard *>::iterator greenIt = hand.begin();
+
+  while (greenIt != hand.end()) {
+    (*greenIt)->print();
+    greenIt++;
+  }
 }
 
-void Player::printArmy(){
-  list <Personality *>::iterator it;
-  for(it = army.begin(); it != army.end(); ++it)
-    (*it)->print();
+void Player::printArmy() {
+  list<Personality *>::iterator persIt = army.begin();
+
+  while (persIt != army.end()) {
+    (*persIt)->print();
+    persIt++;
+  }
 }
 
-void Player::printUntappedArmy(){
-  list <Personality *>::iterator it;
+void Player::printUntappedArmy() {
+  list<Personality *>::iterator persIt = army.begin();
 
-  for(it = army.begin(); it != army.end(); ++it)
-    if(!((*it)->getIsTapped()))
-      (*it)->print();
+  while (persIt != army.end()) {
+    if (!(*persIt)->getIsTapped())
+      (*persIt)->print();
+
+    persIt++;
+  }
 }
 
-inline void Player::printArena(){ printArmy(); }
+void Player::printArena() { printArmy(); }
 
 void Player::printProvinces() {
-  list <BlackCard *>::/* const_ */iterator it;
-  for(it = provinces.begin(); it != provinces.end(); it++)
-    (*it)->print();
+  list<BlackCard *>::iterator blackIt = provinces.begin();
+
+  while (blackIt != provinces.end()) {
+    (*blackIt)->print();
+    blackIt++;
+  }
 }
 
-void Player::discardSurplusFateCards(){
-  int mustPoppedCards = hand.size() - NO_HAND_CARDS;  /* Cards that have to get popped */
-  if(mustPoppedCards > 0) /* If they exist */
-    for(int i = 0; i < mustPoppedCards; i++){
-      int randomCard = rand() % hand.size();  /* Pick a random card from hand and pop it */
-      list <GreenCard *>::iterator it;
-      for(it = hand.begin(), i = 0; i < randomCard; it++, i++);
-      hand.erase(it);
+void Player::discardSurplusFateCards() {
+  int n_cards_to_pop = hand.size() - NO_HAND_CARDS;
+
+  if (n_cards_to_pop > 0)
+    for (int i = 0; i < n_cards_to_pop; i++) {
+
+      // choose a random card to pop from hand
+      int randomCard = rand() % hand.size();
+
+      list<GreenCard *>::iterator greenIt = hand.begin();
+      for (int j = 0; j < randomCard; greenIt++, j++);
+
+      hand.erase(greenIt);
     }
 }
 
-bool Player::checkWinningCondition(list<Player *>players, unsigned int playersNumber) const{
+bool Player::checkWinningCondition(list<Player *> players) {
   bool hasWon = true;
-  list<Player *>::iterator it;
+  list<Player *>::iterator playerIt = players.begin();
 
-  for (it = players.begin(); it != players.end(); it++)
-    if ((*it) != this)
-      hasWon = hasWon && !((*it)->hasProvinces());
+  while (playerIt != players.end()) {
+    if (*playerIt != this)
+      hasWon = hasWon && !(*playerIt)->hasProvinces();
+
+    playerIt++;
+  }
 
   return (hasWon && this->hasProvinces());
 }
 
-bool Player::isMoneyEnough(Card *myCard){
-  return (money >= myCard->getCost());
+bool Player::isMoneyEnough(Card *card) {
+  return (money >= card->getCost());
 }
 
-void Player::buyGreenCard(int position, int personalityPos){
-  list<GreenCard*>::iterator cardIt; int i;
-  for(i = 0, cardIt = hand.begin(); i < position; i++, cardIt++);
+void Player::buyGreenCard(int position, int personalityPos) {
+  list<GreenCard*>::iterator greenIt = hand.begin();
 
-  list<Personality *>::iterator personalityIt;
-  for(i = 0, personalityIt = army.begin(); i < personalityPos ; personalityIt++);
+  // Find a pointer to the target card
+  for (int i = 0; i < position; i++, greenIt++);
 
-  if((*cardIt)->getType() == FOLLOWER)
-    if(!hasMaxFollowers(*personalityIt))
-      if((*personalityIt)->getHonour() >= (*cardIt)->getMinHonour()){
-        if(tapHoldings(*cardIt)){
-          (*personalityIt)->expandPersonality(*cardIt, FOLLOWER);
-          money -= (*cardIt)->getCost();
+  list<Personality *>::iterator persIt = army.begin();
 
-          if(wantToUpgrade())
-            if(!upgradeGreenCard(*cardIt))
-              cout << "Unfortunately you can't upgrade your card because you haven't enough money or holdings" << endl;
+  // Find the personality to which we will equip the to-be-bought card
+  for (int i = 0; i < personalityPos; i++, persIt++);
 
-          hand.erase(cardIt);
-        }
-        else
-          cout << "There weren't enough holdings to reach the requested amount of money";
-      }
-      else
-        cout << "Current personality hasn't the required honour" << endl;
-    else
-      cout << "Current personality has the max number of followers" << endl;
-  else
-    if(!hasMaxItems(*personalityIt))
-      if((*personalityIt)->getHonour() > (*cardIt)->getMinHonour()){
-        if(tapHoldings(*cardIt)){
-          (*personalityIt)->expandPersonality(*cardIt, FOLLOWER);
-          money -= (*cardIt)->getCost();
+  cardType card_type = (*greenIt)->getType();
 
-          if(wantToUpgrade())
-            if(!upgradeGreenCard(*cardIt))
-              cout << "Unfortunately you can't upgrade your card because you haven't enough money or holdings" << endl;
+  // Check if the maximum cards of card_type have been reached
+  if (card_type == FOLLOWER && (*persIt)->hasMaxFollowers()) {
+    cout << "Can't attach another follower to personality" << endl;
+    return;
+  }
+  else if (card_type == ITEM && (*persIt)->hasMaxItems()) {
+    cout << "Can't attach another item to personality" << endl;
+    return;
+  }
 
-          hand.erase(cardIt);
-        }
-        else
-          cout << "There weren't enough holdings to reach the requested amount of money";
-      }
-      else
-        cout << "Current personality hasn't the required honour" << endl;
-    else
-      cout << "Current personality has the max number of items" << endl;
+  // Check if the personality's honour is sufficient to buy card
+  if ((*persIt)->getHonour() < (*greenIt)->getMinHonour()) {
+    cout << "Unable to attach card to personality (insufficient honour)\n";
+    return;
+  }
 
+  // Check if the player's balance is sufficient to buy card
+  if (!tapHoldings((*greenIt)->getCost())) {
+    cout << "Not enough money to buy card" << endl;
+    money = 0;
+    return;
+  }
+
+  (*persIt)->expandPersonality(*greenIt, card_type);
+  money -= (*greenIt)->getCost();
+
+  if (wantToUpgrade() && !upgradeGreenCard(*greenIt))
+    cout << "Not enough money to upgrade card" << endl;
+
+  hand.erase(greenIt);
   money = 0;
 }
 
 void Player::buyBlackCard(int target_province) {
-  list<BlackCard*>::iterator cardIt = provinces.begin();
-  for(int i = 0; i < target_province; i++, cardIt++);
+  list<BlackCard*>::iterator blackIt = provinces.begin();
 
-  if (isMoneyEnough(*cardIt)) {
-    money -= (*cardIt)->getCost();
+  // Find a pointer to the target card
+  for (int i = 0; i < target_province; i++, blackIt++);
 
-    if ((*cardIt)->getType() == PERSONALITY)
-      army.push_back((Personality*) *cardIt);
-    else{
-      formMineChain((Holding *) *cardIt);
-      holdings.push_back((Holding *) *cardIt);
-    }
-
-    provinces.erase(cardIt);
-    drawDynastyCard();
+  // Check if the player's balance is sufficient to buy card
+  if (!tapHoldings((*blackIt)->getCost())) {
+    cout << "Not enough money to buy card" << endl;
+    money = 0;
+    return;
   }
-  else if (tapHoldings(*cardIt)) {
-    money -= (*cardIt)->getCost();
 
-    if ((*cardIt)->getType() == PERSONALITY)
-      army.push_back((Personality *) *cardIt);
-    else{
-      formMineChain((Holding *) *cardIt);
-      holdings.push_back((Holding *) *cardIt);
-    }
+  money -= (*blackIt)->getCost();
 
-    provinces.erase(cardIt);
-    drawDynastyCard();
+  if ((*blackIt)->getType() == PERSONALITY)
+    army.push_back((Personality *) *blackIt);
+  else {
+    formMineChain((Holding *) *blackIt);
+    holdings.push_back((Holding *) *blackIt);
   }
-  else
-    cout << "There weren't enough holdings to reach the requested amount of money" << endl;
 
+  provinces.erase(blackIt);
+  drawDynastyCard();
   money = 0;
 }
 
-bool Player::tapHoldings(Card *CardPtr){
-  unsigned tempMoney = money;
-  list<Holding *>::iterator it = holdings.begin();
+bool Player::tapHoldings(int cost) {
+  int temp_balance = money;
+  list<Holding *>::iterator holdIt = holdings.begin();
 
-  while(!isMoneyEnough(CardPtr)){
-    if(!(*it)->getIsTapped())
-      tempMoney += (*it)->tap();
+  // Accumulate the harvest values of the player's holdings until
+  // (a) the needed amount is reached or (b) we run out of holdings
 
-    it++;
-    if(it == holdings.end()){  /* If there wasn't possible to reach the requested amount of money  */
-      list<Holding *>::iterator tempIt;
-      it--;
-      for(tempIt = holdings.begin(); tempIt != it; tempIt++)  /* Untap all the holdings you tapped */
-        (*tempIt)->untap();
-      return false; /* And return the result of collecting harvesValue's */
+  while (temp_balance < cost || holdIt == holdings.end()) {
+    if (!(*holdIt)->getIsTapped())
+      temp_balance += (*holdIt)->tap();
+
+    holdIt++;
+  }
+
+  // If the needed amount couldn't be reached, untap all holdings (reset)
+  if (holdIt == holdings.end()) {
+    holdIt = holdings.begin();
+
+    while (holdIt != holdings.end()) {
+      (*holdIt)->untap();
+      holdIt++;
     }
+
+    return false; // Signal that the purchase failed
   }
-  money = tempMoney;  /* If there are enough holdings to reach the amount
-                        by tapping them, update the money of player */
-  return true;
+
+  // Otherwise, update the player's "wallet state"
+  money = temp_balance;
+  return true; // Signal that the purchase succeeded
 }
 
-bool Player::hasMaxFollowers(Personality *myPersonality){ 
-  /* Checks if the personality at position personalityPos has max followers */
-  list <GreenCard *>::iterator it;
-  return myPersonality->hasMaxFollowers();
-}
-
-bool Player::hasMaxItems(Personality *myPersonality){
-  /* Checks if the personality at position personalityPos has max items */
-  return myPersonality->hasMaxItems();
-}
-
-bool Player::upgradeGreenCard(GreenCard *cardPtr){
-  if(isMoneyEnough(cardPtr)){
-    cardPtr->Upgrade();
-    money -= cardPtr->getEffectCost();
-    return true;
+bool Player::upgradeGreenCard(GreenCard *card) {
+  if (tapHoldings(card->getEffectCost())) {
+    card->Upgrade();
+    money -= card->getEffectCost();
+    return true; // Signal that the upgrade succeeded
   }
-  else{
-    if(tapHoldings(cardPtr)){
-      cardPtr->Upgrade();
-      money -= cardPtr->getEffectCost();
-      return true;
-    }
-    else
-      return false;
-  }
+
+  return false; // Signal that the upgrade failed
 }
 
-bool Player::wantToUpgrade() const{
+bool Player::wantToUpgrade() {
   string input;
-  cout << "If you want to upgrade your new item type y, or n if not :";
-  cin >> input; cout << endl;
 
-  while(input != "y" && input != "n"){
-    cout << "If you want to upgrade your new item type y, or n if not :";
-    cin >> input; cout << endl;
-  }
+  do {
+    cout << "Upgrade new item (y/n)? ";
+    cin >> input;
+    cout << endl;
+  } while (input != "y" && input != "n");
 
-  if(input == "y")
-    return true;
-  else  /* No error-handling */
-    return false;
+  return (input == "y");
 }
 
-void Player::activatePersonalities(){
-  printUntappedArmy();
+void Player::activatePersonalities() {
   int selectedPersonality;
-  string selectedPersonalityStr;
-  cout << "Put a number of personality you want to activate for defence or attack or type ok to continue :";
-  cin >> selectedPersonalityStr;
-  cout << endl;
+  string input;
 
-  while(selectedPersonalityStr != "ok"){
-    stringstream temp(selectedPersonalityStr);
-    temp >> selectedPersonality;
+  printUntappedArmy();
 
-    if(selectedPersonality > 0 && selectedPersonality <= army.size()){
-      list<Personality *>::iterator it; int i;
-      for(i = 0, it = army.begin(); i < selectedPersonality; it++)
-        if(!(*it)->getIsTapped())
+  cout << "Enter the indexes of personalities you want to activate"
+       << " (or type ok to continue): ";
+
+  cin >> input;
+
+  while (input != "ok") {
+    selectedPersonality = stoi(input);
+
+    if (selectedPersonality > 0 && selectedPersonality <= army.size()) {
+      list<Personality *>::iterator persIt = army.begin();
+
+      for (int i = 0; i < selectedPersonality; persIt++)
+        if (!(*persIt)->getIsTapped()) // Bypass tapped personalities
           i++;
 
-      activatedPersonalities.push_back(*it);
-      army.erase(it);
+      activatedPersonalities.push_back(*persIt);
+      army.erase(persIt);
     }
-    else 
-      cout << "Wrong input, try again !" << endl << endl;
+    else cout << "Wrong input, try again!" << endl << endl;
 
-    cout << "Put a number of personality you want to activate for defence or attack or type 'ok' to continue :";
-    cin >> selectedPersonalityStr;
-    cout << endl;
+    cin >> input;
   }
 }
 
-unsigned Player::calculateAttackPoints(){
-  unsigned totalPoints;
-  list<Personality *>::iterator it;
+int Player::calculateAttackPoints() {
+  int totalPoints;
+  list<Personality *>::iterator playerIt = activatedPersonalities.begin();
 
-  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
-    totalPoints += (*it)->calculateAttackPoints();
-
-  return totalPoints;
-}
-
-unsigned Player::calculateDefencePoints(){
-  unsigned totalPoints;
-  list<Personality *>::iterator it;
-
-  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
-    totalPoints += (*it)->calculateDefencePoints();
+  while (playerIt != activatedPersonalities.end()) {
+    totalPoints += (*playerIt)->calculateAttackPoints();
+    playerIt++;
+  }
 
   return totalPoints;
 }
 
-bool Player::destroyProvince(int chosenProvince){
-  list<BlackCard *>::iterator it;
+int Player::calculateDefencePoints() {
+  int totalPoints;
+  list<Personality *>::iterator playerIt = activatedPersonalities.begin();
+
+  while (playerIt != activatedPersonalities.end()) {
+    totalPoints += (*playerIt)->calculateDefencePoints();
+    playerIt++;
+  }
+
+  return totalPoints;
+}
+
+bool Player::destroyProvince(int chosenProvince) {
+  list<BlackCard *>::iterator blackIt = provinces.begin();
   BlackCard *tempBCardPtr;
 
-  for(it = provinces.begin(); it != provinces.end(); it++);
-  if((tempBCardPtr = dynamic_cast<Personality *>(*it)) == nullptr)
-    tempBCardPtr = ((Holding *)(*it));
+  // Find a pointer to the target card
+  for (int i = 0; i < chosenProvince; i++, blackIt++);
+
+  if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
+    tempBCardPtr = (Holding *) *blackIt;
   
-  delete(tempBCardPtr);
-  provinces.erase(it);
+  delete tempBCardPtr;
+  provinces.erase(blackIt);
 
-  if(provinces.empty())
-    return true;  /* Return true if player (*this) is dead */
-
-  return false;
+  // True if player has lost in the game, false otherwise
+  return provinces.empty();
 }
 
-void Player::destroyActPers(){
-  list<Personality *>::iterator it;
+void Player::destroyActPers() {
+  list<Personality *>::iterator persIt = activatedPersonalities.begin();
 
-  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++)
-    delete(*it);
+  while (persIt != activatedPersonalities.end()) {
+    delete *persIt;
+    persIt++;
+  }
+
   activatedPersonalities.clear();
 }
 
-void Player::discardActPCards(int difference){
-  int tempAtkPoints = 0;
+void Player::discardActPCards(int difference) {
+  list<Personality *>::iterator persIt = activatedPersonalities.begin();
+  list<Follower *>::iterator followerIt;
 
-  list<Personality *>::iterator it1;
-  list<Follower *>::iterator it2;
+  while (persIt != activatedPersonalities.end()) {
+    if (difference <= 0) return;
 
-  for(it1 = activatedPersonalities.begin(); it1 != activatedPersonalities.end();){
-    if(tempAtkPoints >= difference)
-      return;
+    followerIt = (*persIt)->getFollowers().begin();
 
-    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end();){
-      if(tempAtkPoints >= difference)
-        return;
+    while (followerIt != (*persIt)->getFollowers().end()) {
+      if (difference <= 0) return;
 
-      delete(*it2);
-      it2 = (*it1)->getFollowers().erase(it2);
+      delete *followerIt;
+      followerIt = (*persIt)->getFollowers().erase(followerIt);
     }
 
-    delete(*it1);
-    it1 = activatedPersonalities.erase(it1);
+    delete *persIt;
+    persIt = activatedPersonalities.erase(persIt);
   }
 }
 
-void Player::battleReverberations(){
-  list<Personality *>::iterator it1;
-  list<Follower *>::iterator it2;
-  list<Item *>::iterator it3, temp;
+void Player::battleReverberations() {
+  list<Personality *>::iterator persIt = activatedPersonalities.begin();
+  list<Follower *>::iterator followerIt;
+  list<Item *>::iterator itemIt;
 
-  for(it1 = activatedPersonalities.begin(); it1 != activatedPersonalities.end(); it1++){
-    for(it2 = (*it1)->getFollowers().begin(); it2 != (*it1)->getFollowers().end(); it2++)
-      (*it2)->tap();
+  while (persIt != activatedPersonalities.end()) {
+    followerIt = (*persIt)->getFollowers().begin();
 
-    (*it1)->tap();
+    while (followerIt != (*persIt)->getFollowers().end()) {
+      (*followerIt)->tap();
+      followerIt++;
+    }
 
-    for(it3 = (*it1)->getItems().begin(); it3 != (*it1)->getItems().end(); it3++){
-      (*it3)->reduceDurability();
-      if(!(*it3)->getDurability()){
-        (*it3)->detach();
-        it3 = (*it1)->getItems().erase(it3);
-        it3--;  /* Don't skip any Item */
+    (*persIt)->tap();
+
+    itemIt = (*persIt)->getItems().begin();
+
+    while (itemIt != (*persIt)->getItems().end()) {
+      (*itemIt)->reduceDurability();
+
+      if (!(*itemIt)->getDurability()) {
+        (*itemIt)->detach();
+        itemIt = (*persIt)->getItems().erase(itemIt);
+        itemIt--; // Don't skip any item
       }
+
+      itemIt++;
     }
+
+    persIt++;
   }
 }
 
-void Player::reduceActPersHonour(){
-  list<Personality *>::iterator it, temp;
+void Player::reduceActPersHonour() {
+  list<Personality *>::iterator persIt = activatedPersonalities.begin();
 
-  for(it = activatedPersonalities.begin(); it != activatedPersonalities.end(); it++){
-    (*it)->reduceHonour();
-    if(!(*it)->getHonour()){
-      (*it)->performSeppuku();  /* Suicide */
-      it = activatedPersonalities.erase(it);  /* pops it-nth position card and sets it = it + 1 */
-      it--; /* Don't skip any activated Personality */
+  while (persIt != activatedPersonalities.end()) {
+    (*persIt)->reduceHonour();
+
+    if (!(*persIt)->getHonour()) {
+      (*persIt)->performSeppuku();
+      persIt = activatedPersonalities.erase(persIt);
+      persIt--; // Don't skip any activated Personality
     }
+
+    persIt++;
   }
 }
 
-void Player::formMineChain(Holding *holding){
+void Player::formMineChain(Holding *holding) {
   bool upperSet = false, subSet = false;
 
   list<Holding *>::iterator holdIt = holdings.begin();
 
-  int newHoldingPriority = getMinePriority(holding);
-  int currentPriority;
+  int newHoldingType = getMineType(holding);
+  int currentType;
+
+  // For each holding in the "holdings" list, check:
+  // (a) if its type is either MINE, GOLD_MINE or CRYSTAL_MINE, and
+  // (b) if it can form a chain with the new holding (argument)
 
   while (holdIt != holdings.end() && !(upperSet && subSet)) {
-    if ((currentPriority = getMinePriority(*holdIt)) != 0) {
-      if (newHoldingPriority > currentPriority && !subSet
+    if ((currentType = getMineType(*holdIt)) != 0) {
+      if (newHoldingType > currentType && !subSet
        && (*holdIt)->getUpperHolding() == nullptr) {
         subSet = true;
         holding->setSubHolding(*holdIt);
         (*holdIt)->setUpperHolding(holding);
       }
-      else if (newHoldingPriority < currentPriority && !upperSet
+      else if (newHoldingType < currentType && !upperSet
        && (*holdIt)->getSubHolding() == nullptr) {
         upperSet = true;
         holding->setUpperHolding(*holdIt);
@@ -459,7 +510,7 @@ void Player::formMineChain(Holding *holding){
   }
 }
 
-int getMinePriority(Holding *holding) {
+int getMineType(Holding *holding) {
   switch (holding->getHoldingType()) {
     case MINE:          return 1;
     case GOLD_MINE:     return 2;

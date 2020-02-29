@@ -4,49 +4,42 @@
 #include <string>
 #include <list>
 
-#include "../auxiliary_files/DeckBuilder.hpp"
-#include "../include/card.hpp"
-#include "../include/enums.hpp"
-
-#define NO_HAND_CARDS 6
-#define NO_OF_PROVINCES 4
+#include "card.hpp"
+#include "deck_builder.hpp"
 
 class Player {
 private:
-  unsigned money;
-  unsigned honour;
-  unsigned initialDefence;
+  int money;
+  int honour;
+  int initialDefence;
+  int numberOfProvinces;
 
   DeckBuilder decks;
 
-  unsigned numberOfProvinces;
-  std::list <BlackCard *> provinces;
+  std::list<BlackCard *> provinces;
+  std::list<GreenCard *> hand;
 
-  std::list <GreenCard *> hand;
+  std::list<Holding *>     holdings;
+  std::list<Personality *> army;
+  std::list<Personality *> activatedPersonalities;
 
-  std::list <Holding *> holdings;
-  std::list <Personality *> army;
-  std::list <Personality *> activatedPersonalities;
-
-  bool hasProvinces() const{ return !(provinces.empty()); }
+  bool hasProvinces() { return !provinces.empty(); }
  
- /* Useful methods for equipment/economy Phase */
-  bool isMoneyEnough(Card*);
-  bool tapHoldings(Card*);
+  // Auxiliary methods for equipment/economy phase
+  bool isMoneyEnough(Card *);
+  bool tapHoldings(int);
   bool upgradeGreenCard(GreenCard *);
-  bool hasMaxFollowers(Personality *);
-  bool hasMaxItems(Personality *);
-  bool wantToUpgrade() const;
+  bool wantToUpgrade();
   void formMineChain(Holding *);
-  int getMinePriority(Holding *);
+  int getMineType(Holding *);
 
-  void printUntappedArmy(); /* Useful for activatePersonalities */
+  void printUntappedArmy(); // Used in activatePersonalities()
 
 public:
   Player();
   ~Player();
 
-  /* Methods for starting/final Phase */
+  // Methods for starting/final phase
   void untapEverything();
   void drawFateCard();
   void drawDynastyCard();
@@ -61,10 +54,10 @@ public:
   void buyGreenCard(int, int);
   void buyBlackCard(int);
 
-/* Methods added for battlePhase */
+  // Methods for battle phase
   void activatePersonalities();
-  unsigned calculateAttackPoints();
-  unsigned calculateDefencePoints();
+  int calculateAttackPoints();
+  int calculateDefencePoints();
   bool destroyProvince(int);
   void reduceProvinces() { numberOfProvinces--; }
   void destroyActPers();
@@ -72,18 +65,18 @@ public:
   void battleReverberations();
   void reduceActPersHonour();
 
-  bool checkWinningCondition(std::list<Player *>, unsigned int) const;
+  bool checkWinningCondition(std::list<Player *>);
 
-  /*Getters*/
-  std::list <BlackCard *> getProvinces() const{ return provinces; }
-  std::list <GreenCard *> getHand() const{ return hand; }
-  std::list <Holding *> getHoldings() const{ return holdings; }
-  std::list <Personality *> getArmy() const{ return army; }
+  // Getters
+  std::list<BlackCard *> getProvinces() { return provinces; }
+  std::list<GreenCard *> getHand() { return hand; }
+  std::list<Holding *> getHoldings() { return holdings; }
+  std::list<Personality *> getArmy() { return army; }
 
-  unsigned getSizeOfHand() const{ return hand.size(); }
-  unsigned getSizeOfArmy() const{ return army.size(); }
-  unsigned getMoney() const{ return money; }
-  unsigned getHonour() const{ return honour; }
-  unsigned getInitialDefence() const{ return initialDefence; }
-  unsigned getNumberOfProvinces() const { return numberOfProvinces; }
+  int getSizeOfHand() { return hand.size(); }
+  int getSizeOfArmy() { return army.size(); }
+  int getMoney() { return money; }
+  int getHonour() const { return honour; }
+  int getInitialDefence() { return initialDefence; }
+  int getNumberOfProvinces()  { return numberOfProvinces; }
 };

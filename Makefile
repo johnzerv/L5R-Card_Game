@@ -1,0 +1,22 @@
+I_PATH = ./include
+O_PATH = ./src
+
+OBJS = $(O_PATH)/deck_builder.o $(O_PATH)/gameboard.o $(O_PATH)/player.o
+EXEC = L5R
+
+FLAGS = -Wall -I$(I_PATH) -std=c++11
+CC = g++
+
+# The @ character is used to silence make's output
+
+$(EXEC): $(OBJS)
+	@$(CC) $(FLAGS) $(OBJS) -o $(EXEC)
+
+.PHONY: clean
+.SILENT: $(OBJS) # silence implicit rule output
+
+clean:
+	@rm -rf $(EXEC) $(OBJS)
+
+run: $(EXEC)
+	@./$(EXEC)
