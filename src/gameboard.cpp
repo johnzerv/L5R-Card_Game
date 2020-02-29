@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "../include/gameboard.hpp"
+#include "../include/card.hpp"
 
 using namespace std;
 
@@ -186,8 +187,9 @@ void GameBoard::battlePhase(Player &player) {
 
   string input;
   cout << endl << "Choose a player to attack (0 - " 
-       << numberOfPlayers << ") or type 'ok' to continue:";
+       << numberOfPlayers << ") or type 'ok' to continue :";
   cin >> input;
+  cout << endl;
 
   int chosenPlayerInt;
 

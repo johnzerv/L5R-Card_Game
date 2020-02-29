@@ -122,6 +122,7 @@ void Player::revealProvinces() {
 
 void Player::printHoldings() {
   list<Holding *>::iterator holdIt = holdings.begin();
+  cout << "Printing Holdings :" << endl << endl;
 
   while (holdIt != holdings.end()) {
     (*holdIt)->print();
@@ -131,6 +132,7 @@ void Player::printHoldings() {
 
 void Player::printHand() {
   list<GreenCard *>::iterator greenIt = hand.begin();
+  cout << "Printing Hand :" << endl << endl;
 
   while (greenIt != hand.end()) {
     (*greenIt)->print();
@@ -140,6 +142,7 @@ void Player::printHand() {
 
 void Player::printArmy() {
   list<Personality *>::iterator persIt = army.begin();
+  cout << "Printing Army :" << endl << endl;
 
   while (persIt != army.end()) {
     (*persIt)->print();
@@ -149,6 +152,7 @@ void Player::printArmy() {
 
 void Player::printUntappedArmy() {
   list<Personality *>::iterator persIt = army.begin();
+  cout << "Printing Untapped Personalities of Army :" << endl << endl;
 
   while (persIt != army.end()) {
     if (!(*persIt)->getIsTapped())
@@ -158,10 +162,13 @@ void Player::printUntappedArmy() {
   }
 }
 
-void Player::printArena() { printArmy(); }
+void Player::printArena() {
+  cout << "Printing Arena :" << endl << endl;
+  printArmy();}
 
 void Player::printProvinces() {
   list<BlackCard *>::iterator blackIt = provinces.begin();
+  cout << "Printing Provinces :" << endl << endl;
 
   while (blackIt != provinces.end()) {
     (*blackIt)->print();
