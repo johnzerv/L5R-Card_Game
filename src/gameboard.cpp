@@ -98,7 +98,7 @@ void GameBoard::finalPhase(Player &player) {
 
 void GameBoard::equipPhase(Player &player) {
   cout << "\n-------- EQUIPMENT PHASE ----------\n" << endl;
-
+  
   if (!player.getArmy().empty()) {
     player.printArmy();
     player.printHand();
@@ -220,6 +220,8 @@ void GameBoard::battlePhase(Player &player) {
     if (attackerPoints - defencerPoints - chosenPlayer->getInitialDefence()
                                        > chosenPlayer->getInitialDefence()) {
 
+      cout << "You WON the battle !!!" << endl << endl;
+
       if (chosenPlayer->destroyProvince(chosenProvince)) {
         delete *playerIt;
         players.erase(playerIt);
@@ -235,15 +237,21 @@ void GameBoard::battlePhase(Player &player) {
                       - chosenPlayer->getInitialDefence();
 
       if (difference > 0) {
+      cout << "You didn't manage to destroy the defencer province but you destroy enemy's activated army !" << endl << endl;
+
         chosenPlayer->destroyActPers();
         player.discardActPCards(difference);
         player.reduceActPersHonour();
       }
       else if (attackerPoints == defencerPoints) {
+              cout << "You and your enemy lost activated army after this battle !" << endl << endl;
+
         player.destroyActPers();
         chosenPlayer->destroyActPers();
       }
       else if (difference < 0) {
+        cout << "You didn't manage to destroy the defencer province, and you also lost your activated army !" << endl << endl;
+
         player.destroyActPers();
         chosenPlayer->discardActPCards(difference);
         chosenPlayer->reduceActPersHonour();

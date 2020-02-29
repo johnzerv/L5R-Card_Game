@@ -26,7 +26,7 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     rand() % 10, rand() % 6));
+                     rand() % 10 + 1, rand() % 6));
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
@@ -265,7 +265,7 @@ void Player::buyBlackCard(int target_province) {
   // Check if the player's balance is sufficient to buy card
   if (!tapHoldings((*blackIt)->getCost())) {
     cout << "Not enough money to buy card" << endl;
-    money = 0;
+    // money = 0;
     return;
   }
 
@@ -280,7 +280,7 @@ void Player::buyBlackCard(int target_province) {
 
   provinces.erase(blackIt);
   drawDynastyCard();
-  money = 0;
+  // money = 0;
 }
 
 bool Player::tapHoldings(int cost) {
@@ -297,6 +297,12 @@ bool Player::tapHoldings(int cost) {
     holdIt++;
   }
 
+  // cout << "LEFTA POU EXW MEXRI TWRA : " << tempBalance << endl << endl;
+  if(tempBalance >= cost){
+    money = tempBalance;
+    return true; // Signal that the purchase succeeded
+  }
+
   // If the needed amount couldn't be reached, untap all holdings (reset)
   if (holdIt == holdings.end()) {
     holdIt = holdings.begin();
@@ -306,11 +312,11 @@ bool Player::tapHoldings(int cost) {
       holdIt++;
     }
 
+    cout << "EEEEEP" << endl;
     return false; // Signal that the purchase failed
   }
 
   // Otherwise, update the player's "wallet state"
-  money = tempBalance;
   return true; // Signal that the purchase succeeded
 }
 
