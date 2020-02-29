@@ -12,6 +12,7 @@ int Stronghold::ID = 0;
 Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
   decks.createFateDeck();
   decks.createDynastyDeck();
+  decks.deckShuffler();
 
   // Initialize the player's "provinces", "hand" and "holdings" lists
 

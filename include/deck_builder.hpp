@@ -22,6 +22,7 @@ public:
   void createFateDeck();
   void createDynastyDeck();
 
+  void deckShuffler();
   void deckShuffler(std::list<BlackCard *> *black);
   void deckShuffler(std::list<GreenCard *> *green);
 

@@ -128,3 +128,8 @@ void DeckBuilder::deckShuffler(list<GreenCard *> *green) {
     greenItV++;
   }
 }
+
+void DeckBuilder::deckShuffler(){
+  deckShuffler(black);
+  deckShuffler(green);
+}
