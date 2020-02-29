@@ -119,8 +119,9 @@ public:
   void detach() { delete this; }
 
   virtual void print() {
+    std::cout << "Item" << std::endl;
     GreenCard::print();
-    std::cout << "Item :" << std::endl;
+    std::cout << "Item's attribute :" << std::endl;
     std::cout << "Durability: " << durability << std::endl << std::endl;
   }
 

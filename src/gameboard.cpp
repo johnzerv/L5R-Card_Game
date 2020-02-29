@@ -50,15 +50,17 @@ void GameBoard::gameplay() {
   while (!gameover) {
     list<Player *>::iterator playerIt = players.begin();
 
-    int player_no = 1;
+    int playerNO = 0;
     while (playerIt != players.end()) {
+
+      cout << "\n\nPlayer's number " << playerNO << " turn !" << endl;
 
       startingPhase(**playerIt);
       equipPhase(**playerIt);
       battlePhase(**playerIt);
 
       if ((*playerIt)->checkWinningCondition(players)) {
-        cout << "Player " << player_no << " has won!" << endl;
+        cout << "Player " << playerNO << " has won!" << endl;
         gameover = true;
         break;
       }
@@ -67,7 +69,7 @@ void GameBoard::gameplay() {
       finalPhase(**playerIt);
 
       playerIt++;
-      player_no++;
+      playerNO++;
     }
   }
 }
