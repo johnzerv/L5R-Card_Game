@@ -265,7 +265,7 @@ void Player::buyBlackCard(int target_province) {
   // Check if the player's balance is sufficient to buy card
   if (!tapHoldings((*blackIt)->getCost())) {
     cout << "Not enough money to buy card" << endl;
-    // money = 0;
+    money = 0;
     return;
   }
 
@@ -280,7 +280,7 @@ void Player::buyBlackCard(int target_province) {
 
   provinces.erase(blackIt);
   drawDynastyCard();
-  // money = 0;
+  money = 0;
 }
 
 bool Player::tapHoldings(int cost) {
@@ -297,7 +297,6 @@ bool Player::tapHoldings(int cost) {
     holdIt++;
   }
 
-  // cout << "LEFTA POU EXW MEXRI TWRA : " << tempBalance << endl << endl;
   if(tempBalance >= cost){
     money = tempBalance;
     return true; // Signal that the purchase succeeded
@@ -312,7 +311,6 @@ bool Player::tapHoldings(int cost) {
       holdIt++;
     }
 
-    cout << "EEEEEP" << endl;
     return false; // Signal that the purchase failed
   }
 
