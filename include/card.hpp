@@ -366,4 +366,4 @@ public:
   virtual cardType getType() { return HOLDING; }
 };
 
-int Stronghold::ID = 0;
+// int Stronghold::ID = 0;

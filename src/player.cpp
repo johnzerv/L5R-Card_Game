@@ -7,6 +7,8 @@
 
 using namespace std;
 
+int Stronghold::ID = 0;
+
 Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
   decks.createFateDeck();
   decks.createDynastyDeck();
@@ -510,7 +512,7 @@ void Player::formMineChain(Holding *holding) {
   }
 }
 
-int getMineType(Holding *holding) {
+int Player::getMineType(Holding *holding) {
   switch (holding->getHoldingType()) {
     case MINE:          return 1;
     case GOLD_MINE:     return 2;

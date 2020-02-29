@@ -20,9 +20,9 @@ public:
   ~GameBoard();
 
   // Basic functionalities of our game
-  void initializeGameBoard(int);
+  void initializeGameBoard(int = 2);
   void printGameStatistics();
-  void gameplay(/*...*/);
+  void gameplay();
 
   // Getters
   int getNumberOfPlayers() { return numberOfPlayers; }

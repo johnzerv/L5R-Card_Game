@@ -17,7 +17,7 @@ GameBoard::~GameBoard() {
   players.clear();
 }
 
-void GameBoard::initializeGameBoard(int playersNumber = 2) {
+void GameBoard::initializeGameBoard(int playersNumber) {
   numberOfPlayers = playersNumber;
 
   for (int i = 0; i < playersNumber; i++)
