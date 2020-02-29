@@ -276,15 +276,15 @@ void Player::buyBlackCard(int target_province) {
 }
 
 bool Player::tapHoldings(int cost) {
-  int temp_balance = money;
+  int tempBalance = money;
   list<Holding *>::iterator holdIt = holdings.begin();
 
   // Accumulate the harvest values of the player's holdings until
   // (a) the needed amount is reached or (b) we run out of holdings
 
-  while (temp_balance < cost || holdIt == holdings.end()) {
+  while (tempBalance < cost && holdIt != holdings.end()) {
     if (!(*holdIt)->getIsTapped())
-      temp_balance += (*holdIt)->tap();
+      tempBalance += (*holdIt)->tap();
 
     holdIt++;
   }
@@ -302,7 +302,7 @@ bool Player::tapHoldings(int cost) {
   }
 
   // Otherwise, update the player's "wallet state"
-  money = temp_balance;
+  money = tempBalance;
   return true; // Signal that the purchase succeeded
 }
 

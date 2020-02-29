@@ -29,7 +29,7 @@ public:
   void tap() { isTapped = true; }
 
   virtual void print() {
-    std::cout << "Card:" << std::endl
+    std::cout << "Card's attributes:" << std::endl
               << "Name: " << name << std::endl
               << "Cost: " << cost << std::endl
               << "Is tapped: " << (isTapped ? "true" : "false") << std::endl;
@@ -71,14 +71,14 @@ public:
   void Upgrade() { isUpgraded = true; }
 
   virtual void print() {
-    std::cout << "Green card - ";
     Card::print();
+    std::cout << "Green card" << std::endl;
     std::cout << "Attack bonus: " << attackBonus << std::endl
               << "Defence bonus: " << defenceBonus << std::endl
               << "Minimum honour: " << minimumHonour << std::endl
               << "Card text: " << cardText << std::endl
               << "Effect bonus: " << effectBonus << std::endl
-              << "Effect cost: " << effectCost << std::endl;
+              << "Effect cost: " << effectCost << std::endl << std::endl;
   }
 
   virtual cardType getType() = 0;
@@ -93,7 +93,7 @@ public:
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   virtual void print() {
-    std::cout << "Follower - ";
+    std::cout << "Follower" << std::endl;
     GreenCard::print();
   }
 
@@ -119,9 +119,9 @@ public:
   void detach() { delete this; }
 
   virtual void print() {
-    std::cout << "Item - ";
     GreenCard::print();
-    std::cout << "Durability: " << durability << std::endl;
+    std::cout << "Item :" << std::endl;
+    std::cout << "Durability: " << durability << std::endl << std::endl;
   }
 
   virtual cardType getType() { return ITEM; }
@@ -144,8 +144,8 @@ public:
   void setRevealedTrue() { isRevealed = true; }
 
   virtual void print() {
-     std::cout << "BlackCard - ";
      Card::print();
+     std::cout << "BlackCard's attributes :" << std::endl;
      std::cout << "Is revealed: " << (isRevealed ? "true" : "false")
                << std::endl;
   }
@@ -264,11 +264,12 @@ public:
   void performSeppuku() { delete this; }
 
   virtual void print() {
-    std::cout << "Personality - ";
+    std::cout << "Personality" << std::endl;
     BlackCard::print();
+    std::cout << "Personality attributes :" << std::endl;
     std::cout << "Attack: " << attack << std::endl
               << "Defence: " << defence << std::endl
-              << "Honour: " << honour << std::endl;
+              << "Honour: " << honour << std::endl << std::endl;
   }
 
   virtual cardType getType() { return PERSONALITY; }
@@ -324,8 +325,9 @@ public:
   void setSubHolding(Holding *subHold) { subHolding = subHold; }
 
   virtual void print() {
-    std::cout << "Holding - ";
+    std::cout << "Holding" << std::endl;
     BlackCard::print();
+    std::cout << "Holding's attributes :" << std::endl;
     std::cout << "Harvest value: " << harvestValue << std::endl;
 
     if (upperHolding != nullptr) {
@@ -337,6 +339,8 @@ public:
       std::cout << "Sub holding - ";
       upperHolding->print();
     }
+
+    std::cout << std::endl;
   }
 
   virtual cardType getType() { return HOLDING; }
@@ -355,10 +359,11 @@ public:
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   virtual void print() {
-    std::cout << "Stronghold - ";
+    std::cout << "Stronghold" << std::endl;
     Holding::print();
+    std::cout << "Stronghold's attributes :" << std::endl; 
     std::cout << "Honour: " << honour << std::endl
-              << "Initial defence: " << initialDefence << std::endl;
+              << "Initial defence: " << initialDefence << std::endl << std::endl;
   }
 
   static int nextID() { return ++ID; }
