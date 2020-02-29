@@ -151,13 +151,19 @@ void GameBoard::economyPhase(Player &player) {
   for (int i = 0; i < player.getNumberOfProvinces(); i++, itProvince++)
     available[i] = ((*itProvince)->getRevealed() == true);
 
+  string targetProvinceStr;
   int targetProvince;
-  for (int i = 0; i < player.getNumberOfProvinces(); i++) {
-    cout << "Select a province (0 to 3) to buy (enter -1"
-         << " if you wish to continue to the next phase)" << endl;
-    cin >> targetProvince;
 
-    if (targetProvince == -1) return;
+  for (int i = 0; i < player.getNumberOfProvinces(); i++) {
+    cout << "Select a province (0 to 3) to buy (enter ok"
+         << " if you wish to continue to the next phase)" << endl;
+    cin >> targetProvinceStr;
+
+    if (targetProvinceStr == "ok") return;
+
+    stringstream temp(targetProvinceStr);
+    temp >> targetProvince;
+
     if (targetProvince < 0 || targetProvince > 3) {
       cout << "Invalid province index, please try again" << endl;
       i--;

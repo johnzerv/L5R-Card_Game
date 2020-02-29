@@ -26,7 +26,7 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     rand() % 10 + 1, rand() % 6));
+                     rand() % 5 + 5, rand() % 6));  // harvest for Stronghold between 5-9
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
