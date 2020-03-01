@@ -64,7 +64,7 @@ public:
   void discardActPCards(int);
   void battleReverberations();
   void reduceActPersHonour();
-  void empty_wallet() { money = 0; }
+  void emptyWallet() { money = 0; }
   int getBalance();
 
   bool checkWinningCondition(std::list<Player *>);

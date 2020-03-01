@@ -332,13 +332,13 @@ public:
     std::cout << "Harvest value: " << harvestValue << std::endl;
 
     if (upperHolding != nullptr) {
-      std::cout << "Upper holding - ";
-      upperHolding->print();
+      std::cout << "Upper holding :" << std::endl;
+      std::cout << upperHolding->getName() << std::endl;
     }
 
     if (subHolding != nullptr) {
-      std::cout << "Sub holding - ";
-      upperHolding->print();
+      std::cout << "Sub holding :" << std::endl;
+      std::cout << subHolding->getName() << std::endl;
     }
 
     std::cout << std::endl;

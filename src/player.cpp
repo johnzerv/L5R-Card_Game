@@ -158,6 +158,8 @@ int Player::getBalance() {
   list<Holding *>::iterator holdIt = holdings.begin();
 
   while (holdIt != holdings.end()) {
+    if((*holdIt)->getIsTapped())
+      continue;
     balance += (*holdIt)->tap(false);
     holdIt++;
   }
@@ -299,15 +301,15 @@ void Player::buyBlackCard(int target_province, int &balance) {
 
   cout << "Purchase completed" << "\n\n";
 
-  // Erase the purchased card and get the right position for the new black card (tempBlackIt)
-  list<BlackCard *>::iterator tempBlackIt = provinces.erase(blackIt);
-
   if ((*blackIt)->getType() == PERSONALITY)
     army.push_back((Personality *) *blackIt);
   else {
     formMineChain((Holding *) *blackIt);
     holdings.push_back((Holding *) *blackIt);
   }
+
+  // Erase the purchased card and get the right position for the new black card (tempBlackIt)
+  list<BlackCard *>::iterator tempBlackIt = provinces.erase(blackIt);
 
   drawDynastyCard(tempBlackIt);
 }
@@ -390,7 +392,7 @@ void Player::activatePersonalities() {
   while (input != "ok") {
     selectedPersonality = stoi(input);
 
-    if (selectedPersonality > 0 && selectedPersonality <= army.size()) {
+    if (selectedPersonality >= 0 && selectedPersonality < army.size()) {
       list<Personality *>::iterator persIt = army.begin();
 
       for (int i = 0; i < selectedPersonality; persIt++)

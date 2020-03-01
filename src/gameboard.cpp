@@ -134,9 +134,9 @@ void GameBoard::equipPhase(Player &player) {
     temp1 >> selectedCard;
     temp2 >> personalityPos;
 
-    if (selectedCard >= 0 && selectedCard <= player.getSizeOfHand()) {
+    if (selectedCard >= 0 && selectedCard < player.getSizeOfHand()) {
 
-      if (personalityPos >= 0 && personalityPos <= player.getArmy().size())
+      if (personalityPos >= 0 && personalityPos < player.getArmy().size())
         player.buyGreenCard(selectedCard, personalityPos, balance);
       else
         cout << "Out of bounds personality index";   
@@ -149,7 +149,7 @@ void GameBoard::equipPhase(Player &player) {
     player.printHand();
   } while (true);
 
-  player.empty_wallet();
+  player.emptyWallet();
 }
 
 void GameBoard::economyPhase(Player &player) {
@@ -201,7 +201,7 @@ void GameBoard::economyPhase(Player &player) {
     }
   }
 
-  player.empty_wallet();
+  player.emptyWallet();
 }
 
 void GameBoard::battlePhase(Player &player) {
