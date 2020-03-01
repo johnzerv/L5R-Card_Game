@@ -118,20 +118,20 @@ void GameBoard::equipPhase(Player &player) {
     cout << "Enter the index of the card you want to buy"
        << " (or type ok to continue): ";
 
-    cin >> selectedCard;
+    cin >> selectedCardStr;
     cout << "\nEnter the index of the personality you want to expand"
          << " (or type ok to continue): ";
 
-    cin >> personalityPos;
+    cin >> personalityPosStr;
     cout << endl << endl;
 
     stringstream temp1(selectedCardStr), temp2(personalityPosStr);
     temp1 >> selectedCard;
     temp2 >> personalityPos;
 
-    if (selectedCard > 0 && selectedCard <= player.getSizeOfHand()) {
+    if (selectedCard >= 0 && selectedCard <= player.getSizeOfHand()) {
 
-      if (personalityPos > 0 && personalityPos <= player.getArmy().size())
+      if (personalityPos >= 0 && personalityPos <= player.getArmy().size())
         player.buyGreenCard(selectedCard, personalityPos, balance);
       else
         cout << "Out of bounds personality index";   
