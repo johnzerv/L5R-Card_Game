@@ -12,13 +12,13 @@
 class Footsoldier : public Follower {
 public:
   Footsoldier(std::string name)
-  : Follower(name, 0, 2, 0, 1, "Footsoldier", 1, 2) {}
+  : Follower(name, 3, 2, 0, 1, "Footsoldier", 1, 2) {}
 };
 
 class Archer : public Follower {
 public:
   Archer(std::string name)
-  : Follower(name, 0, 0, 2, 1, "Archer", 1, 2) {}
+  : Follower(name, 4, 0, 2, 1, "Archer", 1, 2) {}
 };
 
 class Sieger : public Follower {
@@ -50,13 +50,13 @@ public:
 class Katana : public Item {
 public:
   Katana(std::string name)
-  : Item(name, 0, 2, 0, 1, "Katana", 1, 2, 3) {}
+  : Item(name, 3, 2, 0, 1, "Katana", 1, 2, 3) {}
 };
 
 class Spear : public Item {
 public:
   Spear(std::string name)
-  : Item(name, 0, 0, 2, 1, "Spear", 1, 2, 3) {}
+  : Item(name, 5, 0, 2, 1, "Spear", 1, 2, 3) {}
 };
 
 class Bow : public Item {
