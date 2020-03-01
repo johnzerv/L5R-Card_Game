@@ -16,13 +16,11 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   // Initialize the player's "provinces", "hand" and "holdings" lists
 
-  list<BlackCard*>::iterator blackIt = decks.getBlack()->begin();
-  for (int i = 0; i < numberOfProvinces; i++, blackIt++)
-    provinces.push_back(*blackIt);
+  for (int i = 0; i < numberOfProvinces; i++)
+    drawDynastyCard(provinces.begin());    
 
-  list<GreenCard*>::iterator greenIt = decks.getGreen()->begin();
-  for (int i = 0; i < NO_HAND_CARDS; i++, greenIt++)
-    hand.push_back(*greenIt);
+  for (int i = 0; i < NO_HAND_CARDS; i++)
+    drawFateCard();
 
   // Harvest for Stronghold between 5-9
 
@@ -109,6 +107,7 @@ void Player::drawFateCard() {
 
 void Player::drawDynastyCard(list<BlackCard *>::iterator positionIt) {
   list<BlackCard *>::iterator blackIt = decks.getBlack()->begin();
+
   provinces.insert(positionIt, *blackIt); // Add the new BlackCard to provinces at the right position
   decks.getBlack()->pop_front(); // Remove the drawn card from DynastyDeck
 }
@@ -160,6 +159,7 @@ int Player::getBalance() {
   while (holdIt != holdings.end()) {
     if((*holdIt)->getIsTapped())
       continue;
+
     balance += (*holdIt)->tap(false);
     holdIt++;
   }
@@ -299,7 +299,7 @@ void Player::buyBlackCard(int target_province, int &balance) {
 
   (*blackIt)->tap();
 
-  cout << "Purchase completed" << "\n\n";
+  cout << "Purchase completed\n\n";
 
   if ((*blackIt)->getType() == PERSONALITY)
     army.push_back((Personality *) *blackIt);
