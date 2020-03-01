@@ -28,7 +28,7 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     rand() % 5 + 5, rand() % 6));
+                     /* rand() % 5 + 5 */200, rand() % 6));
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
@@ -107,9 +107,9 @@ void Player::drawFateCard() {
   decks.getGreen()->pop_front(); // Remove the drawn card from FateDeck
 }
 
-void Player::drawDynastyCard() {
+void Player::drawDynastyCard(list<BlackCard *>::iterator positionIt) {
   list<BlackCard *>::iterator blackIt = decks.getBlack()->begin();
-  provinces.push_back(*blackIt); // Add the new BlackCard to provinces
+  provinces.insert(positionIt, *blackIt); // Add the new BlackCard to provinces at the right position
   decks.getBlack()->pop_front(); // Remove the drawn card from DynastyDeck
 }
 
@@ -298,6 +298,9 @@ void Player::buyBlackCard(int target_province, int &balance) {
 
   cout << "Purchase completed" << "\n\n";
 
+  // Erase the purchased card and get the right position for the new black card (tempBlackIt)
+  list<BlackCard *>::iterator tempBlackIt = provinces.erase(blackIt);
+
   if ((*blackIt)->getType() == PERSONALITY)
     army.push_back((Personality *) *blackIt);
   else {
@@ -305,8 +308,7 @@ void Player::buyBlackCard(int target_province, int &balance) {
     holdings.push_back((Holding *) *blackIt);
   }
 
-  provinces.erase(blackIt);
-  drawDynastyCard();
+  drawDynastyCard(tempBlackIt);
 }
 
 bool Player::tapHoldings(int cost) {

@@ -151,7 +151,6 @@ void GameBoard::economyPhase(Player &player) {
   cout << "\n-------- ECONOMY PHASE ----------\n" << endl;
 
   player.revealProvinces();
-  player.printProvinces();
 
   int balance = player.getBalance();
 
@@ -166,6 +165,8 @@ void GameBoard::economyPhase(Player &player) {
   int targetProvince;
 
   for (int i = 0; i < player.getNumberOfProvinces(); i++) {
+    player.printProvinces();
+    
     cout << "Balance: " << balance << endl;
 
     cout << "Select a province (0 to 3) to buy (enter ok"

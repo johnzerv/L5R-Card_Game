@@ -42,7 +42,7 @@ public:
   // Methods for starting/final phase
   void untapEverything();
   void drawFateCard();
-  void drawDynastyCard();
+  void drawDynastyCard(std::list<BlackCard *>::iterator);
   void revealProvinces();
   void printHoldings();
   void printHand();
