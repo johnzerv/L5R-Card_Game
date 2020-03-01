@@ -297,8 +297,8 @@ public:
   Holding * getSubHolding() { return subHolding; }
 
   // Calculates possible bonuses, if a chain exists
-  int tap() {
-    Card::tap();
+  int tap(bool callSuperTap=true) {
+    if (callSuperTap) Card::tap();
 
     if (holdingType == MINE && upperHolding != nullptr)
       return harvestValue + 2; // MINE <-> GOLD_MINE 
@@ -364,7 +364,7 @@ public:
     Holding::print();
     std::cout << "Stronghold's attributes :" << std::endl; 
     std::cout << "Honour: " << honour << std::endl
-              << "Initial defence: " << initialDefence << std::endl << std::endl;
+              << "Initial defence: " << initialDefence << "\n\n";
   }
 
   static int nextID() { return ++ID; }

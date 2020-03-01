@@ -51,8 +51,8 @@ public:
   void printArmy();
   void discardSurplusFateCards();
 
-  void buyGreenCard(int, int);
-  void buyBlackCard(int);
+  void buyGreenCard(int, int, int &);
+  void buyBlackCard(int, int &);
 
   // Methods for battle phase
   void activatePersonalities();
@@ -64,6 +64,8 @@ public:
   void discardActPCards(int);
   void battleReverberations();
   void reduceActPersHonour();
+  void empty_wallet() { money = 0; }
+  int getBalance();
 
   bool checkWinningCondition(std::list<Player *>);
 

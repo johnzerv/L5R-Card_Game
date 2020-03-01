@@ -89,7 +89,7 @@ void GameBoard::finalPhase(Player &player) {
   cout << "\n-------- FINAL PHASE ----------\n" << endl;
 
   player.discardSurplusFateCards();
-  // player.printGameStatistics();
+  printGameStatistics();
   player.printHand();
   player.printProvinces();
   player.printArena();
@@ -98,44 +98,53 @@ void GameBoard::finalPhase(Player &player) {
 
 void GameBoard::equipPhase(Player &player) {
   cout << "\n-------- EQUIPMENT PHASE ----------\n" << endl;
-  
-  if (!player.getArmy().empty()) {
-    player.printArmy();
-    player.printHand();
 
-    string selectedCardStr, personalityPosStr;
-    int selectedCard, personalityPos;
+  if (player.getArmy().empty()) {
+    cout << "Can't equip items yet" << endl;
+    return;
+  }
 
-    do {
-      cout << "Enter the index of the card you want to buy"
+  player.printArmy();
+  player.printHand();
+
+  int balance = player.getBalance();
+
+  string selectedCardStr, personalityPosStr;
+  int selectedCard, personalityPos;
+
+  do {
+    cout << "Balance: " << balance << endl;
+
+    cout << "Enter the index of the card you want to buy"
+       << " (or type ok to continue): ";
+
+    cin >> selectedCard;
+    cout << "\nEnter the index of the personality you want to expand"
          << " (or type ok to continue): ";
 
-      cin >> selectedCard;
-      cout << "\nEnter the index of the personality you want to expand"
-           << " (or type ok to continue): ";
+    cin >> personalityPos;
+    cout << endl << endl;
 
-      cin >> personalityPos;
-      cout << endl << endl;
+    stringstream temp1(selectedCardStr), temp2(personalityPosStr);
+    temp1 >> selectedCard;
+    temp2 >> personalityPos;
 
-      stringstream temp1(selectedCardStr), temp2(personalityPosStr);
-      temp1 >> selectedCard;
-      temp2 >> personalityPos;
+    if (selectedCard > 0 && selectedCard <= player.getSizeOfHand()) {
 
-      if (selectedCard > 0 && selectedCard <= player.getSizeOfHand()) {
-
-        if (personalityPos > 0 && personalityPos <= player.getArmy().size())
-          player.buyGreenCard(selectedCard, personalityPos);
-        else
-          cout << "Out of bounds personality index";   
-      }
+      if (personalityPos > 0 && personalityPos <= player.getArmy().size())
+        player.buyGreenCard(selectedCard, personalityPos, balance);
       else
-        cout << "Out of bounds card index" << endl;
+        cout << "Out of bounds personality index";   
+    }
+    else
+      cout << "Out of bounds card index" << endl;
 
-      cout << endl << endl;
-      player.printArmy();
-      player.printHand();
-    } while (selectedCardStr != "ok" && personalityPosStr != "ok");
-  }
+    cout << endl << endl;
+    player.printArmy();
+    player.printHand();
+  } while (selectedCardStr != "ok" && personalityPosStr != "ok");
+
+  player.empty_wallet();
 }
 
 void GameBoard::economyPhase(Player &player) {
@@ -143,6 +152,8 @@ void GameBoard::economyPhase(Player &player) {
 
   player.revealProvinces();
   player.printProvinces();
+
+  int balance = player.getBalance();
 
   list<BlackCard *> provinces = player.getProvinces();
   bool available[4] = {0}; // available[i] -> i-th province can be bought
@@ -155,11 +166,13 @@ void GameBoard::economyPhase(Player &player) {
   int targetProvince;
 
   for (int i = 0; i < player.getNumberOfProvinces(); i++) {
+    cout << "Balance: " << balance << endl;
+
     cout << "Select a province (0 to 3) to buy (enter ok"
-         << " if you wish to continue to the next phase)" << endl;
+         << " if you wish to continue to the next phase): ";
     cin >> targetProvinceStr;
 
-    if (targetProvinceStr == "ok") return;
+    if (targetProvinceStr == "ok") break;
 
     stringstream temp(targetProvinceStr);
     temp >> targetProvince;
@@ -172,18 +185,27 @@ void GameBoard::economyPhase(Player &player) {
 
     if (available[targetProvince]) {
       available[targetProvince] = false;
-      player.buyBlackCard(targetProvince);
+      player.buyBlackCard(targetProvince, balance);
     }
     else {
-      cout << "This province is unavailable, please choose another one" << endl;
+      cout << "This province is unavailable, please choose "
+           << "another one\n" << endl;
       i--;
       continue;
     }
   }
+
+  player.empty_wallet();
 }
 
 void GameBoard::battlePhase(Player &player) {
   cout << "\n-------- BATTLE PHASE ----------\n" << endl;
+
+  if (player.getArmy().empty()) {
+    cout << "Can't participate in a battle yet" << endl;
+    return;
+  }
+
   player.activatePersonalities();
 
   for (int i = 0; i < numberOfPlayers; i++)
@@ -243,20 +265,23 @@ void GameBoard::battlePhase(Player &player) {
                       - chosenPlayer->getInitialDefence();
 
       if (difference > 0) {
-      cout << "You didn't manage to destroy the defencer province but you destroy enemy's activated army !" << endl << endl;
+      cout << "You didn't manage to destroy the defencer province "
+           << "but you destroy enemy's activated army !" << endl << endl;
 
         chosenPlayer->destroyActPers();
         player.discardActPCards(difference);
         player.reduceActPersHonour();
       }
       else if (attackerPoints == defencerPoints) {
-              cout << "You and your enemy lost activated army after this battle !" << endl << endl;
+              cout << "You and your enemy lost activated "
+                   << "army after this battle !" << endl << endl;
 
         player.destroyActPers();
         chosenPlayer->destroyActPers();
       }
       else if (difference < 0) {
-        cout << "You didn't manage to destroy the defencer province, and you also lost your activated army !" << endl << endl;
+        cout << "You didn't manage to destroy the defencer province,"
+             << "and you also lost your activated army !" << endl << endl;
 
         player.destroyActPers();
         chosenPlayer->discardActPCards(difference);

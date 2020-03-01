@@ -24,9 +24,11 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
   for (int i = 0; i < NO_HAND_CARDS; i++, greenIt++)
     hand.push_back(*greenIt);
 
+  // Harvest for Stronghold between 5-9
+
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     rand() % 5 + 5, rand() % 6));  // harvest for Stronghold between 5-9
+                     rand() % 5 + 5, rand() % 6));
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
@@ -150,6 +152,19 @@ void Player::printArmy() {
   }
 }
 
+int Player::getBalance() {
+  int balance = 0;
+
+  list<Holding *>::iterator holdIt = holdings.begin();
+
+  while (holdIt != holdings.end()) {
+    balance += (*holdIt)->tap(false);
+    holdIt++;
+  }
+
+  return balance;
+}
+
 void Player::printUntappedArmy() {
   list<Personality *>::iterator persIt = army.begin();
   cout << "Printing Untapped Personalities of Army :" << endl << endl;
@@ -210,7 +225,7 @@ bool Player::isMoneyEnough(Card *card) {
   return (money >= card->getCost());
 }
 
-void Player::buyGreenCard(int position, int personalityPos) {
+void Player::buyGreenCard(int position, int personalityPos, int &balance) {
   list<GreenCard*>::iterator greenIt = hand.begin();
 
   // Find a pointer to the target card
@@ -225,38 +240,43 @@ void Player::buyGreenCard(int position, int personalityPos) {
 
   // Check if the maximum cards of card_type have been reached
   if (card_type == FOLLOWER && (*persIt)->hasMaxFollowers()) {
-    cout << "Can't attach another follower to personality" << endl;
+    cout << "Can't attach another follower to personality" << "\n\n";
     return;
   }
   else if (card_type == ITEM && (*persIt)->hasMaxItems()) {
-    cout << "Can't attach another item to personality" << endl;
+    cout << "Can't attach another item to personality" << "\n\n";
     return;
   }
 
   // Check if the personality's honour is sufficient to buy card
   if ((*persIt)->getHonour() < (*greenIt)->getMinHonour()) {
-    cout << "Unable to attach card to personality (insufficient honour)\n";
+    cout << "Unable to attach card to personality (insufficient honour)\n\n";
     return;
   }
 
   // Check if the player's balance is sufficient to buy card
   if (!tapHoldings((*greenIt)->getCost())) {
-    cout << "Not enough money to buy card" << endl;
-    money = 0;
+    cout << "Not enough money to buy card" << "\n\n";
     return;
   }
+
+  cout << "Purchase completed" << "\n\n";
 
   (*persIt)->expandPersonality(*greenIt, card_type);
   money -= (*greenIt)->getCost();
 
   if (wantToUpgrade() && !upgradeGreenCard(*greenIt))
-    cout << "Not enough money to upgrade card" << endl;
+    cout << "Not enough money to upgrade card" << "\n\n";
+  else {
+    cout << "Upgrade completed" << "\n\n";
+    balance -= (*greenIt)->getEffectCost();
+  }
 
+  balance -= (*greenIt)->getCost();
   hand.erase(greenIt);
-  money = 0;
 }
 
-void Player::buyBlackCard(int target_province) {
+void Player::buyBlackCard(int target_province, int &balance) {
   list<BlackCard*>::iterator blackIt = provinces.begin();
 
   // Find a pointer to the target card
@@ -264,12 +284,19 @@ void Player::buyBlackCard(int target_province) {
 
   // Check if the player's balance is sufficient to buy card
   if (!tapHoldings((*blackIt)->getCost())) {
-    cout << "Not enough money to buy card" << endl;
-    money = 0;
+    cout << "Not enough money to buy card" << "\n\n";
     return;
   }
 
   money -= (*blackIt)->getCost();
+  balance -= (*blackIt)->getCost();
+
+  // If the card we bought is a holding, we can't tap it during this round
+  // to get its harvest value. We need to wait until the next round
+
+  (*blackIt)->tap();
+
+  cout << "Purchase completed" << "\n\n";
 
   if ((*blackIt)->getType() == PERSONALITY)
     army.push_back((Personality *) *blackIt);
@@ -280,7 +307,6 @@ void Player::buyBlackCard(int target_province) {
 
   provinces.erase(blackIt);
   drawDynastyCard();
-  money = 0;
 }
 
 bool Player::tapHoldings(int cost) {
@@ -289,33 +315,40 @@ bool Player::tapHoldings(int cost) {
 
   // Accumulate the harvest values of the player's holdings until
   // (a) the needed amount is reached or (b) we run out of holdings
+  //
+  // Note: we don't tap any of the holdings until we make sure the
+  // requested amount has been reached
 
   while (tempBalance < cost && holdIt != holdings.end()) {
     if (!(*holdIt)->getIsTapped())
-      tempBalance += (*holdIt)->tap();
+      tempBalance += (*holdIt)->tap(false);
 
     holdIt++;
   }
 
-  if(tempBalance >= cost){
+  // If we have managed to reach the requested amount, proceed to tap
+  // all of the needed holdings, traversing the holding list backwards
+  //
+  // Note: we don't have to do the above if we alredy had the requested
+  // amount of money (acquired in a previous transaction)
+
+  if (tempBalance >= cost) {
+    if (tempBalance == money) return true; // don't have to tap holdings
+
+    list<Holding *>::iterator tempHoldIt = holdings.begin();
+
+    while (tempHoldIt != holdIt) {
+      if (!(*tempHoldIt)->getIsTapped())
+        (*tempHoldIt)->tap();
+
+      tempHoldIt++;
+    }
+
     money = tempBalance;
     return true; // Signal that the purchase succeeded
   }
 
-  // If the needed amount couldn't be reached, untap all holdings (reset)
-  if (holdIt == holdings.end()) {
-    holdIt = holdings.begin();
-
-    while (holdIt != holdings.end()) {
-      (*holdIt)->untap();
-      holdIt++;
-    }
-
-    return false; // Signal that the purchase failed
-  }
-
-  // Otherwise, update the player's "wallet state"
-  return true; // Signal that the purchase succeeded
+  return false; // Signal that the purchase failed
 }
 
 bool Player::upgradeGreenCard(GreenCard *card) {
