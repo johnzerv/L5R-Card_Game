@@ -28,7 +28,7 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     /* rand() % 5 + 5 */200, rand() % 6));
+                     rand() % 5 + 5 , rand() % 6));
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
@@ -265,12 +265,13 @@ void Player::buyGreenCard(int position, int personalityPos, int &balance) {
   (*persIt)->expandPersonality(*greenIt, card_type);
   money -= (*greenIt)->getCost();
 
-  if (wantToUpgrade() && !upgradeGreenCard(*greenIt))
-    cout << "Not enough money to upgrade card" << "\n\n";
-  else {
-    cout << "Upgrade completed" << "\n\n";
-    balance -= (*greenIt)->getEffectCost();
-  }
+  if(wantToUpgrade())
+    if(upgradeGreenCard(*greenIt)){
+      cout << "Upgrade completed\n\n";
+      balance -= (*greenIt)->getEffectCost();
+    }
+    else
+      cout << "Not enough money to upgrade card\n\n";
 
   balance -= (*greenIt)->getCost();
   hand.erase(greenIt);

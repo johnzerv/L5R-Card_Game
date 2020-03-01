@@ -119,10 +119,15 @@ void GameBoard::equipPhase(Player &player) {
        << " (or type ok to continue): ";
 
     cin >> selectedCardStr;
+    if(selectedCardStr == "ok")
+      break;
+
     cout << "\nEnter the index of the personality you want to expand"
          << " (or type ok to continue): ";
 
     cin >> personalityPosStr;
+    if(personalityPosStr == "ok")
+      break;
     cout << endl << endl;
 
     stringstream temp1(selectedCardStr), temp2(personalityPosStr);
@@ -142,7 +147,7 @@ void GameBoard::equipPhase(Player &player) {
     cout << endl << endl;
     player.printArmy();
     player.printHand();
-  } while (selectedCardStr != "ok" && personalityPosStr != "ok");
+  } while (true);
 
   player.empty_wallet();
 }
@@ -166,7 +171,7 @@ void GameBoard::economyPhase(Player &player) {
 
   for (int i = 0; i < player.getNumberOfProvinces(); i++) {
     player.printProvinces();
-    
+
     cout << "Balance: " << balance << endl;
 
     cout << "Select a province (0 to 3) to buy (enter ok"

@@ -200,8 +200,8 @@ public:
   std::list<Follower *> getFollowers() { return followers; }
   std::list<Item *> getItems() { return items; }
 
-  bool hasMaxFollowers() { return followers.size() <= MAX_FOLLOWERS; }
-  bool hasMaxItems() { return items.size() <= MAX_ITEMS; }
+  bool hasMaxFollowers() { return followers.size() >= MAX_FOLLOWERS; }
+  bool hasMaxItems() { return items.size() >= MAX_ITEMS; }
 
   void expandPersonality(Card *CardPtr, int type) {
     if (type == FOLLOWER)
