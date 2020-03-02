@@ -37,6 +37,41 @@ Project Details
   After that is done, the game will start and the players that participate
   in it will start being prompted for their moves on the terminal window.
 
-• Project structure
+• Project Structure
+  -----------------
+
+  - blackcards.hpp, greencards.hpp, constants.hpp : auxiliary .hpp files
+  - cards.hpp : contains the (inline) definition of the Card (class) hierarchy
+
+  - deck_builder.* : definition of class DeckBuilder
+  - gameboard.*    : definition of class GameBoard
+  - player.*       : definition of class Player
+
+• Design Choices
+  --------------
+
+  - To start off, each player is instantiated inside the initializeGameBoard()
+    method. This method takes an optional argument (how many players to create,
+    2 by default) and creates the corresponding Player objects (in the heap).
+    These Player objects are then pushed in a list<Player *> container (STL),
+    which is a private member of the GameBoard class.
+
+  - Inside the GameBoard scope, we have created a method for each of the game's
+    phases (i.e. Starting phase, Equipment phase, etc.). Each of these methods
+    receives a Player argument and basically simulates the corresponding phase
+    for that player. These methods have been kept private to this scope, as the
+    user doesn't need to know anything about them.
+
+  - GameBoard::printGameStatistics() is trivial: it just prints each player's
+    cards (i.e. Holdings, Hand, Provinces and Army).
+
+  - In GameBoard::gameplay(), the player's are first sorted in decreasing order,
+    based on their honour (sort() STL list method). After that, there's the game
+    loop which determines the game flow: each player makes a move for the corre-
+    sponding phase of the game, and a gameover check is made after each battle
+    phase. If a winner is found, the program will print his ID and exit the loop.
+
+
+
 
 

@@ -146,9 +146,9 @@ void Player::printHand() {
   }
 }
 
-void Player::printArmy() {
+void Player::printArena() {
   list<Personality *>::iterator persIt = army.begin();
-  cout << "Printing Army :" << endl << endl;
+  cout << "Printing Arena :" << endl << endl;
 
   while (persIt != army.end()) {
     (*persIt)->print();
@@ -184,10 +184,6 @@ void Player::printUntappedArmy() {
     persIt++;
   }
 }
-
-void Player::printArena() {
-  cout << "Printing Arena :" << endl << endl;
-  printArmy();}
 
 void Player::printProvinces() {
   list<BlackCard *>::iterator blackIt = provinces.begin();

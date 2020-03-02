@@ -46,9 +46,8 @@ public:
   void revealProvinces();
   void printHoldings();
   void printHand();
-  void printArena();
   void printProvinces();
-  void printArmy();
+  void printArena();
   void discardSurplusFateCards();
 
   void buyGreenCard(int, int, int &);

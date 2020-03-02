@@ -11,7 +11,7 @@ GameBoard::~GameBoard() {
   list<Player *>::iterator playerIt = players.begin();
 
   while (playerIt != players.end()) {
-    delete(*playerIt);
+    delete *playerIt;
     playerIt++;
   }
 
@@ -31,11 +31,10 @@ void GameBoard::printGameStatistics() {
   for (int i = 0; i < numberOfPlayers; i++, playerIt++) {
     cout << "\nPrinting stats for player " << i << endl;
 
-    (*playerIt)->printHoldings();
     (*playerIt)->printHand();
-    (*playerIt)->printArena();
     (*playerIt)->printProvinces();
-    (*playerIt)->printArmy();
+    (*playerIt)->printArena();
+    (*playerIt)->printHoldings();
   }
 }
 
@@ -44,6 +43,8 @@ bool comparePlayers(const Player *a, const Player *b) {
 }
 
 void GameBoard::gameplay() {
+
+  // Sort players in decreasing order, based on their honour
   players.sort(comparePlayers);
 
   bool gameover = false;
@@ -92,7 +93,6 @@ void GameBoard::finalPhase(Player &player) {
   printGameStatistics();
   player.printHand();
   player.printProvinces();
-  player.printArena();
   player.printHoldings();
 }
 
@@ -104,9 +104,10 @@ void GameBoard::equipPhase(Player &player) {
     return;
   }
 
-  player.printArmy();
+  player.printArena();
   player.printHand();
 
+  // Keeps track of the player's balance for this phase
   int balance = player.getBalance();
 
   string selectedCardStr, personalityPosStr;
@@ -145,7 +146,7 @@ void GameBoard::equipPhase(Player &player) {
       cout << "Out of bounds card index" << endl;
 
     cout << endl << endl;
-    player.printArmy();
+    player.printArena();
     player.printHand();
   } while (true);
 
@@ -162,7 +163,9 @@ void GameBoard::economyPhase(Player &player) {
   list<BlackCard *> provinces = player.getProvinces();
   bool available[4] = {0}; // available[i] -> i-th province can be bought
 
-  list<BlackCard*> :: iterator itProvince = provinces.begin();
+  list<BlackCard*>::iterator itProvince = provinces.begin();
+
+  // Only revealed provinces will be available for purchase by default
   for (int i = 0; i < player.getNumberOfProvinces(); i++, itProvince++)
     available[i] = ((*itProvince)->getRevealed() == true);
 
@@ -190,7 +193,9 @@ void GameBoard::economyPhase(Player &player) {
     }
 
     if (available[targetProvince]) {
+      // 
       available[targetProvince] = false;
+
       player.buyBlackCard(targetProvince, balance);
     }
     else {
