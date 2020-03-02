@@ -119,14 +119,14 @@ void GameBoard::equipPhase(Player &player) {
        << " (or type ok to continue): ";
 
     cin >> selectedCardStr;
-    if(selectedCardStr == "ok")
+    if (selectedCardStr == "ok")
       break;
 
     cout << "\nEnter the index of the personality you want to expand"
          << " (or type ok to continue): ";
 
     cin >> personalityPosStr;
-    if(personalityPosStr == "ok")
+    if (personalityPosStr == "ok")
       break;
     cout << endl << endl;
 
@@ -215,7 +215,7 @@ void GameBoard::battlePhase(Player &player, int playerNO) {
   player.activatePersonalities();
 
   for (int i = 0; i < numberOfPlayers; i++){
-    if(i == playerNO)
+    if (i == playerNO)
       continue;
 
     cout << "Player " << to_string(i) << "  ";

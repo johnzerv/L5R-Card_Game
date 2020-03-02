@@ -159,10 +159,10 @@ int Player::getBalance() {
 
   list<Holding *>::iterator holdIt = holdings.begin();
 
-  if(holdIt != holdings.end())
+  if (holdIt != holdings.end())
 
   while (holdIt != holdings.end()) {
-    if(!(*holdIt)->getIsTapped())
+    if (!(*holdIt)->getIsTapped())
       balance += (*holdIt)->tap(false);
 
     holdIt++;
@@ -271,8 +271,8 @@ void Player::buyGreenCard(int position, int personalityPos, int &balance) {
   (*persIt)->expandPersonality(*greenIt, card_type);
   money -= (*greenIt)->getCost();
 
-  if(wantToUpgrade())
-    if(upgradeGreenCard(*greenIt)){
+  if (wantToUpgrade())
+    if (upgradeGreenCard(*greenIt)){
       cout << "Upgrade completed\n\n";
       balance -= (*greenIt)->getEffectCost();
     }

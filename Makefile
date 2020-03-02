@@ -1,7 +1,8 @@
 I_PATH = ./include
 O_PATH = ./src
 
-OBJS = $(O_PATH)/main.o	$(O_PATH)/deck_builder.o $(O_PATH)/gameboard.o $(O_PATH)/player.o
+OBJS = $(O_PATH)/main.o	$(O_PATH)/deck_builder.o $(O_PATH)/gameboard.o \
+			 $(O_PATH)/player.o
 EXEC = L5R
 
 FLAGS = -Wall -I$(I_PATH) -std=c++11

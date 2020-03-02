@@ -367,7 +367,7 @@ public:
               << "Initial defence: " << initialDefence << "\n\n";
   }
 
-  int getInitDefence() const{ return initialDefence; }
+  int getInitDefence() { return initialDefence; }
   static int nextID() { return ++ID; }
 
   virtual cardType getType() { return HOLDING; }
