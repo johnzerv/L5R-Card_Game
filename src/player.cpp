@@ -159,11 +159,12 @@ int Player::getBalance() {
 
   list<Holding *>::iterator holdIt = holdings.begin();
 
-  while (holdIt != holdings.end()) {
-    if((*holdIt)->getIsTapped())
-      continue;
+  if(holdIt != holdings.end())
 
-    balance += (*holdIt)->tap(false);
+  while (holdIt != holdings.end()) {
+    if(!(*holdIt)->getIsTapped())
+      balance += (*holdIt)->tap(false);
+
     holdIt++;
   }
 
