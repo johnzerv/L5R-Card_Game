@@ -77,7 +77,9 @@ public:
   int getSizeOfHand() { return hand.size(); }
   int getSizeOfArmy() { return army.size(); }
   int getMoney() { return money; }
-  int getHonour() const { return honour; } // DONT REMOVE const FROM HERE
   int getInitialDefence() { return initialDefence; }
   int getNumberOfProvinces()  { return numberOfProvinces; }
+
+  // The 'const' keyword is needed here (see comparePlayers, gameboard.cpp)
+  int getHonour() const { return honour; }
 };

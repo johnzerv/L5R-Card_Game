@@ -29,11 +29,8 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
                      rand() % 5 + 5 , rand() % 6 + 4));
 
   list<Holding *>::iterator strongholdIt = holdings.begin();
-  initialDefence = ((Stronghold *)(*strongholdIt))->getInitDefence();
+  initialDefence = ((Stronghold *) (*strongholdIt))->getInitDefence();
 }
-
-// TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
-// CARDS ARE DELETED IN MULTIPLE POINTS IN THE PROGRAM
 
 Player::~Player() {
 
@@ -65,7 +62,7 @@ Player::~Player() {
   persIt = activatedPersonalities.begin();
 
   while (persIt != activatedPersonalities.end()) {
-    delete *persIt; // CAREFUL, COULD BE CAUSING A DOUBLE FREE!
+    delete *persIt;
     persIt++;
   }
 
@@ -313,6 +310,7 @@ void Player::buyBlackCard(int target_province, int &balance) {
 
   // Erase the purchased card and get the right position for
   // the new black card (tempBlackIt)
+
   list<BlackCard *>::iterator tempBlackIt = provinces.erase(blackIt);
 
   drawDynastyCard(tempBlackIt);
@@ -436,7 +434,7 @@ int Player::calculateDefencePoints() {
     totalPoints += (*personalityIt)->calculateDefencePoints();
     personalityIt++;
   }
-  
+
   return totalPoints;
 }
 
