@@ -23,10 +23,4 @@ public:
   void initializeGameBoard(int = 2);
   void printGameStatistics();
   void gameplay();
-
-  // Getters
-  int getNumberOfPlayers() { return numberOfPlayers; }
-  std::list<Player *> getPlayersList() { return players; }
 };
-
-bool comparePlayers(const Player *a, const Player *b);
