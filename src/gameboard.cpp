@@ -221,11 +221,9 @@ void GameBoard::battlePhase(Player &player, int playerNO) {
     cout << "Player " << to_string(i) << "  ";
   }
 
-  // numberOfPlayers must be decremented each time a player dies
-
   string input;
   cout << endl << "Choose a player to attack (0 - " 
-       << numberOfPlayers << ") or type 'ok' to continue :";
+       << numberOfPlayers - 1 << ") or type 'ok' to continue :";
   cin >> input;
   cout << endl;
 
@@ -263,7 +261,7 @@ void GameBoard::battlePhase(Player &player, int playerNO) {
       if (chosenPlayer->destroyProvince(chosenProvince)) {
         delete *playerIt;
         players.erase(playerIt);
-        cout << "Player " << chosenPlayer << " is dead !\n" << endl;
+        cout << "Player " << chosenPlayerInt << " is dead !\n" << endl;
         reducePlayersNumber();
       }
 

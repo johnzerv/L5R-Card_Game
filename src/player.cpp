@@ -111,7 +111,9 @@ void Player::drawFateCard() {
 void Player::drawDynastyCard(list<BlackCard *>::iterator positionIt) {
   list<BlackCard *>::iterator blackIt = decks.getBlack()->begin();
 
-  provinces.insert(positionIt, *blackIt); // Add the new BlackCard to provinces at the right position
+  // Add the new BlackCard to provinces at the right position
+  provinces.insert(positionIt, *blackIt);
+
   decks.getBlack()->pop_front(); // Remove the drawn card from DynastyDeck
 }
 
@@ -312,7 +314,8 @@ void Player::buyBlackCard(int target_province, int &balance) {
     holdings.push_back((Holding *) *blackIt);
   }
 
-  // Erase the purchased card and get the right position for the new black card (tempBlackIt)
+  // Erase the purchased card and get the right position for
+  // the new black card (tempBlackIt)
   list<BlackCard *>::iterator tempBlackIt = provinces.erase(blackIt);
 
   drawDynastyCard(tempBlackIt);
@@ -388,7 +391,7 @@ void Player::activatePersonalities() {
 
   printUntappedArmy();
 
-  cout << "Enter the indexes of personalities you want to activate"
+  cout << "Enter the index of the personality you want to activate"
        << " (or type ok to continue): ";
 
   cin >> input;
@@ -408,7 +411,11 @@ void Player::activatePersonalities() {
     }
     else cout << "Wrong input, try again!" << endl << endl;
 
+    printUntappedArmy();
+    cout << "Enter the index of the personality you want to activate"
+         << " (or type ok to continue): ";
     cin >> input;
+    cout << endl;
   }
 }
 
