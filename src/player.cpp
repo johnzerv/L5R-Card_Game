@@ -26,7 +26,10 @@ Player::Player() : money(0), numberOfProvinces(NO_OF_PROVINCES) {
 
   string StrongholdName = "Stronghold" + to_string(Stronghold::nextID());
   holdings.push_back(new Stronghold(StrongholdName, rand() % 7, rand() % 5,
-                     rand() % 5 + 5 , rand() % 6));
+                     rand() % 5 + 5 , rand() % 6 + 4));
+
+  list<Holding *>::iterator strongholdIt = holdings.begin();
+  initialDefence = ((Stronghold *)(*strongholdIt))->getInitDefence();
 }
 
 // TO DO: CHECK FOR DOUBLE FREE'S! THIS COULD CAUSE A PROBLEM IF
@@ -409,7 +412,7 @@ void Player::activatePersonalities() {
 }
 
 int Player::calculateAttackPoints() {
-  int totalPoints;
+  int totalPoints = 0;
   list<Personality *>::iterator playerIt = activatedPersonalities.begin();
 
   while (playerIt != activatedPersonalities.end()) {

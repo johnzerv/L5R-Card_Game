@@ -10,7 +10,7 @@ class GameBoard {
 
   void startingPhase(Player &);
   void equipPhase(Player &);
-  void battlePhase(Player &);
+  void battlePhase(Player &, int);
   void economyPhase(Player &);
   void finalPhase(Player &);
   

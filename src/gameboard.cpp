@@ -58,7 +58,7 @@ void GameBoard::gameplay() {
 
       startingPhase(**playerIt);
       equipPhase(**playerIt);
-      battlePhase(**playerIt);
+      battlePhase(**playerIt, playerNO);
 
       if ((*playerIt)->checkWinningCondition(players)) {
         cout << "Player " << playerNO << " has won!" << endl;
@@ -204,7 +204,7 @@ void GameBoard::economyPhase(Player &player) {
   player.emptyWallet();
 }
 
-void GameBoard::battlePhase(Player &player) {
+void GameBoard::battlePhase(Player &player, int playerNO) {
   cout << "\n-------- BATTLE PHASE ----------\n" << endl;
 
   if (player.getArmy().empty()) {
@@ -214,8 +214,12 @@ void GameBoard::battlePhase(Player &player) {
 
   player.activatePersonalities();
 
-  for (int i = 0; i < numberOfPlayers; i++)
+  for (int i = 0; i < numberOfPlayers; i++){
+    if(i == playerNO)
+      continue;
+
     cout << "Player " << to_string(i) << "  ";
+  }
 
   // numberOfPlayers must be decremented each time a player dies
 
@@ -242,7 +246,7 @@ void GameBoard::battlePhase(Player &player) {
 
     int chosenProvince;
     cout << "\nChoose a province to attack (0 - "
-         << chosenPlayer->getNumberOfProvinces() << "): ";
+         << chosenPlayer->getNumberOfProvinces() - 1 << "): ";
 
     cin >> chosenProvince;
     cout << endl << endl;
@@ -278,7 +282,7 @@ void GameBoard::battlePhase(Player &player) {
         player.discardActPCards(difference);
         player.reduceActPersHonour();
       }
-      else if (attackerPoints == defencerPoints) {
+      else if (!difference) {
               cout << "You and your enemy lost activated "
                    << "army after this battle !" << endl << endl;
 
