@@ -425,14 +425,14 @@ int Player::calculateAttackPoints() {
 }
 
 int Player::calculateDefencePoints() {
-  int totalPoints;
-  list<Personality *>::iterator playerIt = activatedPersonalities.begin();
+  int totalPoints = 0;
+  list<Personality *>::iterator personalityIt = activatedPersonalities.begin();
 
-  while (playerIt != activatedPersonalities.end()) {
-    totalPoints += (*playerIt)->calculateDefencePoints();
-    playerIt++;
+  while (personalityIt != activatedPersonalities.end()) {
+    totalPoints += (*personalityIt)->calculateDefencePoints();
+    personalityIt++;
   }
-
+  
   return totalPoints;
 }
 
