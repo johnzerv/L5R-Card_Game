@@ -23,6 +23,9 @@ DeckBuilder::~DeckBuilder() {
     greenIt++;
   }
 
+  black->clear();
+  green->clear();
+  
   delete black;
   delete green;
 }
@@ -107,6 +110,8 @@ void DeckBuilder::deckShuffler(list<BlackCard *> *black) {
     black->push_back(*blackItV);
     blackItV++;
   }
+
+  vect.clear();
 }
 
 void DeckBuilder::deckShuffler(list<GreenCard *> *green) {
@@ -127,6 +132,8 @@ void DeckBuilder::deckShuffler(list<GreenCard *> *green) {
     green->push_back(*greenItV);
     greenItV++;
   }
+
+  vect.clear();
 }
 
 void DeckBuilder::deckShuffler(){
