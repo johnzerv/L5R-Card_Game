@@ -287,7 +287,7 @@ private:
 public:
   Holding(std::string name, int cost, int harv, Holdings holdType)
   : BlackCard(name, cost), harvestValue(harv), holdingType(holdType),
-    upperHolding(std::nullptr), subHolding(std::nullptr)
+    upperHolding(NULL), subHolding(NULL)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   int getHarvestValue() { return harvestValue; }
@@ -300,22 +300,22 @@ public:
   int tap(bool callSuperTap=true) {
     if (callSuperTap) Card::tap();
 
-    if (holdingType == MINE && upperHolding != std::nullptr)
+    if (holdingType == MINE && upperHolding != NULL)
       return harvestValue + 2; // MINE <-> GOLD_MINE 
 
     if (holdingType == GOLD_MINE) {
-      if (subHolding != std::nullptr && upperHolding != std::nullptr)
+      if (subHolding != NULL && upperHolding != NULL)
         return harvestValue * 2; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
-      if (subHolding != std::nullptr)
+      if (subHolding != NULL)
         return harvestValue + 4; // MINE <-> GOLD_MINE
-      if (upperHolding != std::nullptr)
+      if (upperHolding != NULL)
         return harvestValue + 5; // GOLD_MINE <-> CRYSTAL_MINE
     }
 
     if (holdingType == CRYSTAL_MINE) {
-      if (subHolding != std::nullptr && subHolding->subHolding != std::nullptr)
+      if (subHolding != NULL && subHolding->subHolding != NULL)
         return harvestValue * 3; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
-      if (subHolding != std::nullptr)
+      if (subHolding != NULL)
         return harvestValue * 2; // GOLD_MINE <-> CRYSTAL_MINE
     }
 
@@ -331,12 +331,12 @@ public:
     std::cout << "Holding's attributes :" << std::endl;
     std::cout << "Harvest value: " << harvestValue << std::endl;
 
-    if (upperHolding != std::nullptr) {
+    if (upperHolding != NULL) {
       std::cout << "Upper holding :" << std::endl;
       std::cout << upperHolding->getName() << std::endl;
     }
 
-    if (subHolding != std::nullptr) {
+    if (subHolding != NULL) {
       std::cout << "Sub holding :" << std::endl;
       std::cout << subHolding->getName() << std::endl;
     }
