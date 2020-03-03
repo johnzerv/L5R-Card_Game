@@ -6,7 +6,7 @@ OBJS = $(O_PATH)/main.o	$(O_PATH)/deck_builder.o $(O_PATH)/gameboard.o \
 
 EXEC = L5R
 
-CPPFLAGS = -std=c++11 -Wall -I$(I_PATH)
+CPPFLAGS = -std=c++11 -I$(I_PATH)
 CC = g++
 
 # The @ character is used to silence make's output
