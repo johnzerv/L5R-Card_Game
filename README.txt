@@ -133,3 +133,6 @@ TO DO
 - Handle the case where a player runs out of cards during gameplay
   (trivial solution: generate more cards through DeckBuilder)
 
+- Print player's atk/def stats during Battle Phase, so that the
+  player who is making a move can decide whether or not he wants
+  to attack/defence someone/against someone.
