@@ -100,7 +100,7 @@ void GameBoard::equipPhase(Player &player) {
   cout << "\n-------- EQUIPMENT PHASE ----------\n" << endl;
 
   if (player.getArmy().empty()) {
-    cout << "Can't equip items right now" << endl;
+    cout << "Can't equip items yet" << endl;
     return;
   }
 

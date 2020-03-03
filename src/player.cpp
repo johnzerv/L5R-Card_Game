@@ -214,6 +214,7 @@ void Player::discardSurplusFateCards() {
       list<GreenCard *>::iterator greenIt = hand.begin();
       for (int j = 0; j < randomCard; greenIt++, j++);
 
+      delete *greenIt;
       hand.erase(greenIt);
     }
 }
