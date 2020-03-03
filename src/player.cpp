@@ -48,27 +48,7 @@ Player::~Player() {
 
   provinces.clear();
 
-  // Step 2: deallocate the army (cards) of the player
-  list<Personality *>::iterator persIt = army.begin();
-
-  while (persIt != army.end()) {
-    delete *persIt;
-    persIt++;
-  }
-
-  army.clear();
-
-  // Step 3: deallocate the activated personalities (cards) of the player
-  persIt = activatedPersonalities.begin();
-
-  while (persIt != activatedPersonalities.end()) {
-    delete *persIt;
-    persIt++;
-  }
-
-  activatedPersonalities.clear();
-
-  // Step 4: deallocate the hand (cards) of the player
+  // Step 2: deallocate the hand (cards) of the player
   list<GreenCard *>::iterator greenIt = hand.begin();
   GreenCard *tempGCardPtr;
 
@@ -81,6 +61,35 @@ Player::~Player() {
   }
 
   hand.clear();
+
+  list<Holding *>::iterator holdingIt = holdings.begin();
+
+  while(holdingIt != holdings.end()){
+    delete *holdingIt;
+    holdingIt++;
+  }
+
+  holdings.clear();
+
+  // Step 4: deallocate the army (cards) of the player
+  list<Personality *>::iterator persIt = army.begin();
+
+  while (persIt != army.end()) {
+    delete *persIt;
+    persIt++;
+  }
+
+  army.clear();
+
+  // Step 5: deallocate the activated personalities (cards) of the player
+  persIt = activatedPersonalities.begin();
+
+  while (persIt != activatedPersonalities.end()) {
+    delete *persIt;
+    persIt++;
+  }
+
+  activatedPersonalities.clear();
 }
 
 void Player::untapEverything() {
