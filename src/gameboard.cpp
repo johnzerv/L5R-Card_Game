@@ -212,7 +212,7 @@ void GameBoard::economyPhase(Player &player) {
 void GameBoard::battlePhase(Player &player, int playerNO) {
   cout << "\n-------- BATTLE PHASE ----------\n" << endl;
 
-  if (player.getArmy().empty()) {
+  if (player.getArmy().empty() && player.getActivatedPers().empty()) {
     cout << "Can't participate in a battle yet" << endl;
     return;
   }
@@ -231,6 +231,10 @@ void GameBoard::battlePhase(Player &player, int playerNO) {
        << numberOfPlayers - 1 << ") or type 'ok' to continue :";
   cin >> input;
   cout << endl;
+  while(input == to_string(playerNO)){
+    cout << "Can't attack to yourself, please try again" << endl;
+    cin >> input;
+  }
 
   int chosenPlayerInt;
 

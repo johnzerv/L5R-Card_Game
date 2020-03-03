@@ -73,6 +73,7 @@ public:
   std::list<GreenCard *> getHand() { return hand; }
   std::list<Holding *> getHoldings() { return holdings; }
   std::list<Personality *> getArmy() { return army; }
+  std::list<Personality *> getActivatedPers() { return activatedPersonalities; }
 
   int getSizeOfHand() { return hand.size(); }
   int getSizeOfArmy() { return army.size(); }

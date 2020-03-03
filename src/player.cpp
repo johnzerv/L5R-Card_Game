@@ -392,7 +392,8 @@ void Player::activatePersonalities() {
   cin >> input;
 
   while (input != "ok") {
-    selectedPersonality = stoi(input);
+    stringstream temp(input);
+    temp >> selectedPersonality;
 
     if (selectedPersonality >= 0 && selectedPersonality < army.size()) {
       list<Personality *>::iterator persIt = army.begin();
