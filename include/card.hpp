@@ -287,7 +287,7 @@ private:
 public:
   Holding(std::string name, int cost, int harv, Holdings holdType)
   : BlackCard(name, cost), harvestValue(harv), holdingType(holdType),
-    upperHolding(NULL), subHolding(NULL)
+    upperHolding(nullptr), subHolding(nullptr)
   { /* Empty constructor body (on purpose, nothing to do here)! */ }
 
   int getHarvestValue() { return harvestValue; }
@@ -300,22 +300,22 @@ public:
   int tap(bool callSuperTap=true) {
     if (callSuperTap) Card::tap();
 
-    if (holdingType == MINE && upperHolding != NULL)
+    if (holdingType == MINE && upperHolding != nullptr)
       return harvestValue + 2; // MINE <-> GOLD_MINE 
 
     if (holdingType == GOLD_MINE) {
-      if (subHolding != NULL && upperHolding != NULL)
+      if (subHolding != nullptr && upperHolding != nullptr)
         return harvestValue * 2; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
-      if (subHolding != NULL)
+      if (subHolding != nullptr)
         return harvestValue + 4; // MINE <-> GOLD_MINE
-      if (upperHolding != NULL)
+      if (upperHolding != nullptr)
         return harvestValue + 5; // GOLD_MINE <-> CRYSTAL_MINE
     }
 
     if (holdingType == CRYSTAL_MINE) {
-      if (subHolding != NULL && subHolding->subHolding != NULL)
+      if (subHolding != nullptr && subHolding->subHolding != nullptr)
         return harvestValue * 3; // MINE <-> GOLD_MINE <-> CRYSTAL_MINE
-      if (subHolding != NULL)
+      if (subHolding != nullptr)
         return harvestValue * 2; // GOLD_MINE <-> CRYSTAL_MINE
     }
 
@@ -331,12 +331,12 @@ public:
     std::cout << "Holding's attributes :" << std::endl;
     std::cout << "Harvest value: " << harvestValue << std::endl;
 
-    if (upperHolding != NULL) {
+    if (upperHolding != nullptr) {
       std::cout << "Upper holding :" << std::endl;
       std::cout << upperHolding->getName() << std::endl;
     }
 
-    if (subHolding != NULL) {
+    if (subHolding != nullptr) {
       std::cout << "Sub holding :" << std::endl;
       std::cout << subHolding->getName() << std::endl;
     }

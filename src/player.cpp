@@ -39,7 +39,7 @@ Player::~Player() {
   BlackCard *tempBCardPtr;
 
   while (blackIt != provinces.end()) {
-    if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == NULL)
+    if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
       tempBCardPtr = (Holding *) *blackIt;
 
     delete tempBCardPtr;
@@ -73,7 +73,7 @@ Player::~Player() {
   GreenCard *tempGCardPtr;
 
   while (greenIt != hand.end()) {
-    if ((tempGCardPtr = dynamic_cast<Item *> (*greenIt)) == NULL)
+    if ((tempGCardPtr = dynamic_cast<Item *> (*greenIt)) == nullptr)
       tempGCardPtr = (Follower *) *greenIt;
 
     delete tempGCardPtr;
@@ -445,7 +445,7 @@ bool Player::destroyProvince(int chosenProvince) {
   // Find a pointer to the target card
   for (int i = 0; i < chosenProvince; i++, blackIt++);
 
-  if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == NULL)
+  if ((tempBCardPtr = dynamic_cast<Personality *> (*blackIt)) == nullptr)
     tempBCardPtr = (Holding *) *blackIt;
   
   delete tempBCardPtr;
@@ -551,13 +551,13 @@ void Player::formMineChain(Holding *holding) {
   while (holdIt != holdings.end() && !(upperSet && subSet)) {
     if ((currentType = getMineType(*holdIt)) != 0) {
       if (newHoldingType > currentType && !subSet
-       && (*holdIt)->getUpperHolding() == NULL) {
+       && (*holdIt)->getUpperHolding() == nullptr) {
         subSet = true;
         holding->setSubHolding(*holdIt);
         (*holdIt)->setUpperHolding(holding);
       }
       else if (newHoldingType < currentType && !upperSet
-       && (*holdIt)->getSubHolding() == NULL) {
+       && (*holdIt)->getSubHolding() == nullptr) {
         upperSet = true;
         holding->setUpperHolding(*holdIt);
         (*holdIt)->setSubHolding(holding);
