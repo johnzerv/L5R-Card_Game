@@ -62,6 +62,7 @@ Player::~Player() {
 
   hand.clear();
 
+  //Step 3: deallocate holdings (cards) of the player
   list<Holding *>::iterator holdingIt = holdings.begin();
 
   while(holdingIt != holdings.end()){
