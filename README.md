@@ -1,8 +1,8 @@
 Authors
 -------
 
-John Zervakis (Γιάννης Ζερβάκης) - sdi1800048
-George Sittas (Γιώργος Σίττας)   - sdi1800179
+Yiannis Zervakis
+George Sittas
 
 Compilation and Execution
 -------------------------
