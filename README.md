@@ -1,9 +1,9 @@
 Authors
 -------
 
-John Zervakis
+- John Zervakis
 
-George Sittas
+- [George Sittas](https://github.com/GeorgeSittas)
 
 Compilation and Execution
 -------------------------
