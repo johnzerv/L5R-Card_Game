@@ -1,7 +1,7 @@
 Authors
 -------
 
-- John Zervakis
+- Yiannis Zervakis
 
 - [George Sittas](https://github.com/GeorgeSittas)
 
