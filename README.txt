@@ -64,6 +64,12 @@ Project Details
     easy to follow, since it's basically a translation of their description to
     code.
 
+  - One note about the equipment phase: a player can buy Follower/Item cards
+    during this phase, only if he has non active personalities (i.e. only if
+    his army list is non empty). Basically, we've made the design decision that
+    once a Personality card is activated (see battle phase), it can no longer
+    equip any Green cards.
+
   - GameBoard::printGameStatistics() is trivial: it just prints each player's
     cards (i.e. Holdings, Hand, Provinces and Army).
 
