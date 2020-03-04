@@ -1,0 +1,749 @@
+			 <html xmlns:v="urn:schemas-microsoft-com:vml"
+			xmlns:o="urn:schemas-microsoft-com:office:office"
+			xmlns:w="urn:schemas-microsoft-com:office:word"
+			xmlns="http://www.w3.org/TR/REC-html40">
+			
+			<head>
+			<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+			<meta name=ProgId content=Word.Document>
+			<meta name=Generator content="Microsoft Word 9">
+			<meta name=Originator content="Microsoft Word 9">
+			<!--[if !mso]>
+			<style>
+			v\:* {behavior:url(#default#VML);}
+			o\:* {behavior:url(#default#VML);}
+			w\:* {behavior:url(#default#VML);}
+			.shape {behavior:url(#default#VML);}
+			</style>
+			<![endif]-->
+			<title></title>
+			<!--[if gte mso 9]><xml>
+			 <w:WordDocument>
+			  <w:View>Print</w:View>
+			  <w:DoNotHyphenateCaps/>
+			  <w:PunctuationKerning/>
+			  <w:DrawingGridHorizontalSpacing>9.35 pt</w:DrawingGridHorizontalSpacing>
+			  <w:DrawingGridVerticalSpacing>9.35 pt</w:DrawingGridVerticalSpacing>
+			 </w:WordDocument>
+			</xml><![endif]-->
+			<style>
+			<!--
+			 /* Font Definitions */
+			@font-face
+				{font-family:Verdana;
+				panose-1:2 11 6 4 3 5 4 4 2 4;
+				mso-font-charset:0;
+				mso-generic-font-family:swiss;
+				mso-font-pitch:variable;
+				mso-font-signature:536871559 0 0 0 415 0;}
+			 /* Style Definitions */
+			p.MsoNormal, li.MsoNormal, div.MsoNormal
+				{mso-style-parent:"";
+				margin:0in;
+				margin-bottom:.0001pt;
+				mso-pagination:widow-orphan;
+				font-size:7.5pt;
+			        mso-bidi-font-size:8.0pt;
+				font-family:"Verdana";
+				mso-fareast-font-family:"Verdana";}
+			p.small
+				{mso-style-parent:"";
+				margin:0in;
+				margin-bottom:.0001pt;
+				mso-pagination:widow-orphan;
+				font-size:1.0pt;
+			        mso-bidi-font-size:1.0pt;
+				font-family:"Verdana";
+				mso-fareast-font-family:"Verdana";}
+			@page Section1
+				{size:8.5in 11.0in;
+				margin:1.0in 1.25in 1.0in 1.25in;
+				mso-header-margin:.5in;
+				mso-footer-margin:.5in;
+				mso-paper-source:0;}
+			div.Section1
+				{page:Section1;}
+			-->
+			</style>
+			<!--[if gte mso 9]><xml>
+			 <o:shapedefaults v:ext="edit" spidmax="1032">
+			  <o:colormenu v:ext="edit" strokecolor="none"/>
+			 </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
+			 <o:shapelayout v:ext="edit">
+			  <o:idmap v:ext="edit" data="1"/>
+			 </o:shapelayout></xml><![endif]-->
+			 
+			</head>
+			<body><p>Authors<br />-------</p>
+<p>&bull; John Zervakis<br />&bull; <a href="https://github.com/GeorgeSittas">George Sittas</a></p>
+<p>Compilation and Execution<br />-------------------------</p>
+<p>The following commands work inside the directory project<br />(i.e. make sure you're in the right directory before typing them in!)</p>
+<p>- To compile &amp; run the executable, type: make run<br />- To clean the directory, type: make clean</p>
+<p>- If you wish only to compile the project, type: make<br /> (the executable file's name is "L5R")</p>
+<p>Project Goal<br />------------</p>
+<p>In this project we've tried to simulate the trading cards game<br />"Legend of the Five Rings". The project's description can be<br />found in the file "OOPproj_2020.pdf".</p>
+<p>Project Details<br />---------------</p>
+<p>&bull; Game Interface<br /> --------------</p>
+<p>The class GameBoard (see include/gameboard.hpp) is the interface through<br /> which a user can start playing the game. Specifically, in order to start<br /> playing, the user has to create an object of type GameBoard, invoke the<br /> initializeGameBoard() method and then invoke the gameplay() method.</p>
+<p>After that is done, the game will start and the players that participate<br /> in it will start being prompted for their moves on the terminal window.</p>
+<p>&bull; Project Structure<br /> -----------------</p>
+<p>- blackcards.hpp, greencards.hpp, constants.hpp : auxiliary .hpp files<br /> - cards.hpp : contains the (inline) definition of the Card (class) hierarchy</p>
+<p>- deck_builder.* : definition of class DeckBuilder<br /> - gameboard.* : definition of class GameBoard<br /> - player.* : definition of class Player</p>
+<p>&bull; Design Choices<br /> --------------</p>
+<p>- To start off, each player is instantiated inside the initializeGameBoard()<br /> method. This method takes an optional argument (how many players to create,<br /> 2 by default) and creates the corresponding Player objects (in the heap).<br /> These Player objects are then pushed in a list&lt;Player *&gt; container (STL),<br /> which is a private member of the GameBoard class.</p>
+<p>- Inside the GameBoard scope, we have created a method for each of the game's<br /> phases (i.e. Starting phase, Equipment phase, etc.). Each of these methods<br /> receives a Player argument and basically simulates the corresponding phase<br /> for that player. These methods have been kept private to this scope, as the<br /> user doesn't need to know anything about them, and their implementation is<br /> easy to follow, since it's basically a translation of their description to<br /> code.</p>
+<p>- One note about the equipment phase: a player can buy Follower/Item cards<br /> during this phase, only if he has non active personalities (i.e. only if<br /> his army list is non empty). Basically, we've made the design decision that<br /> once a Personality card is activated (see battle phase), it can no longer<br /> equip any Green cards.</p>
+<p>- GameBoard::printGameStatistics() is trivial: it just prints each player's<br /> cards (i.e. Holdings, Hand, Provinces and Army).</p>
+<p>- In GameBoard::gameplay(), the player's are first sorted in decreasing order,<br /> based on their honour (sort() STL list method). After that, there's the game<br /> loop which determines the game flow: each player makes a move for the corre-<br /> sponding phase of the game, and a "gameover check" is made after each battle<br /> phase. If a winner is found, the program will print his ID and exit the loop.</p>
+<p>- The Card (class) hierarchy is shown below:</p>
+<p>Card (abstract)<br /> / \<br /> GreenCard (abstract) BlackCard (abstract)<br /> / \ / \<br /> Follower Item Holding Personality<br /> | | | |<br /> [...] [...] Stronghold, [...] [...]</p>
+<p>where [...] denotes a set of trivial classes (see [blackcards|greencards].hpp).<br /> Each class in the Card (class) hierarchy contains a getType() method, which is<br /> used to identify it from the other classes in the hierarchy.</p>
+<p>- Each Personality has two lists (STL): one for its followers and one for its<br /> items.</p>
+<p>- The deck_builder.* files have been slightly edited, so that they can be adapted<br /> to the needs of our project (changes are easy to follow).</p>
+<p>- Each player has a unique stronghold, since each stronghold card has a _unique_<br /> ID (see the Stronghold class definition).</p>
+<p>- Each player has lists (STL) for his: provinces, hand cards, holdings and army.<br /> Additionally, each player has an auxiliary list "activatedPersonalities", which<br /> is needed for the implementation of the battle phase (see problem description).</p>
+<p>- The Player class's methods are generally easy to follow. Some choices we made:</p>
+<p>&bull; When a player exceeds the hand cards limit, the surplus cards are discarded<br /> randomly.</p>
+<p>&bull; The tapHoldings(cost) method checks whether a player's holdings can provide<br /> him with the sufficient harvest value (i.e. so that the 'cost' value is<br /> reached). If that's the case, it returns true, otherwise false.</p>
+<p>General Notes<br />-------------</p>
+<p>- A simple driver program has been included in the project (main.cpp), in order<br /> to showcase the game's flow through the gameplay() method.</p>
+<p>- We have added comments extensively, so that the code will be easier to follow.<br /> In any case, most of the work done is trivial, so that shouldn't be a problem.</p>
+<p>- Even though there are places in the code where we have tried to incorporate<br /> error handling, such as carefully chosen error diagnostic messages and out<br /> of bounds checks, in general we haven't paid much attention to this matter<br /> (i.e. there could be places where error checking is absent from the code).</p>
+<p>- We've debugged the program to the point where one can (hopefully) use it without<br /> any nuisances, but there could still be some hidden bugs underneath!<br /> Any feedback on this matter will be appreciated! :)</p>
+<p>TO DO<br />-----</p>
+<p>- Handle the case where a player runs out of cards during gameplay<br /> (trivial solution: generate more cards through DeckBuilder)</p>
+<p>- Print player's atk/def stats during Battle Phase, so that the<br /> player who is making a move can decide whether or not he wants<br /> to attack/defence someone/against someone.</p></body></html><!DOCTYPE html><html lang="en">
+<head>
+<meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Text Editor - Plain text editor / Wordpad online</title>
+<meta name="description" content="Online Text Editor tool used as a plain text editor and as a wordpad online. ">
+<meta name="Robots" content="INDEX, FOLLOW">
+<meta name="Publisher" content="PrePost SEO"><meta name="Revisit-After" content="7 Days"><meta name="Rating" content="General">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://ajax.googleapis.com" crossorigin>
+<link href='https://apis.google.com' rel='preconnect' crossorigin>
+<link href='https://www.gstatic.com' rel='preconnect' crossorigin>
+<link href='https://fonts.googleapis.com' rel='preconnect' crossorigin>
+<link href='https://use.fontawesome.com' rel='preconnect' crossorigin>
+
+
+
+<link href="https://www.prepostseo.com/imgs/icon-2.png" rel="icon" type="image/x-icon" />
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700,100,300" rel="stylesheet">
+<link href="https://www.prepostseo.com/assets/pps-frontend/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<link href="https://www.prepostseo.com/assets/pps-frontend/lib/theme.css?v=5.6.1" rel="stylesheet">
+
+<link rel="canonical" href="https://www.prepostseo.com/tool/online-text-editor" /><link rel="alternate" hreflang="x-default" href="https://www.prepostseo.com/tool/online-text-editor" /><link rel="alternate" hreflang="en" href="https://www.prepostseo.com/tool/online-text-editor" /><link rel="alternate" hreflang="es" href="https://www.prepostseo.com/tool/es/online-text-editor" /><script type="text/javascript">
+var base_url = "https://www.prepostseo.com/";
+var tool_title = "Online Text Editor";
+</script>
+
+
+
+
+</head>
+<body>
+<div class="fw">
+    <div class="model-bg"></div><div class="model-box"><span class="model-heading"></span><div class="model-body"> </div> <div class="line"></div> <span class="close-model">X</span><div class="model-footer">If you need any help please <a href="https://www.prepostseo.com/contact" target="_blank">contact us</a></div> </div>
+<script>
+$(".model-bg").click(function(){$(".model-box").hide();$(this).fadeOut(800);});
+$(".close-model").click(function(){$(".model-box").hide();$(".model-bg").fadeOut(800);});
+function showModel(title, data){$(".model-heading").html(title);$(".model-body").html(data);$(".model-box").fadeIn(500);$(".model-bg").show();}
+</script>	
+	<header>
+    
+
+<div class="container-fluid noP" style="position:relative;">
+<div class="container top-bar noP clear">
+	<div class="col-sm-9 noP">
+  <nav class="navbar nav navbar-default" role="navigation" style="margin-bottom:0;">
+  <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+    	<a href="https://www.prepostseo.com/"><img src="https://www.prepostseo.com/imgs/prepostseo.png" alt="PrePost SEO" height="36" class="pull-left logo"></a>
+      <button type="button"  class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+          </div>
+	
+      
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="navbar-collapse collapse noP col-md-8" id="bs-example-navbar-collapse-1" aria-expanded="false" style="height: 1px;">
+      <ul class="nav navbar-nav">
+      			<li class="nav-menu"><a href="https://www.prepostseo.com/plagiarism-checker">Plagiarism Checker</a></li><li class="nav-menu"><a href="https://www.prepostseo.com/word-count-character-count-tool">Word counter</a></li><li class="nav-menu"><a href="https://www.prepostseo.com/reverse-image-search">Reverse Image Search</a></li>        <li class="nav-menu hidden-xs"><a href="https://www.buysellguestpost.com/marketplace" rel="nofollow sponsored" target="_blank"><i class="fa fa-file-text text-warning"></i> Buy Guest Post</a></li>
+        <li class="nav-menu"><a href="https://www.prepostseo.com/plans"><i class="fa fa-star text-primary"></i> Premium Plans</a></li>
+        
+        
+        <li class="nav-menu hidden-lg hidden-md hidden-sm"><a href="https://www.prepostseo.com/contact"><i class="fa fa-phone"></i> Contact Us</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+	</nav>
+    </div>  
+     
+    <div class="pull-right col-sm-3 col-xs-12 text-right" style="padding:0;" id="searchSec" >
+    	
+                <a href="https://www.prepostseo.com/login?register=1" class="logregBtn">Register</a>
+        <a href="https://www.prepostseo.com/login" class="logregBtn">Login</a>
+                
+        
+        <i class="fa fa-search pull-right topsearch"></i>
+    </div>	
+    </div>
+	
+	<div class="sbNew">
+    	<div class="container">
+        	<div class="col-md-12 noP">
+            	<div class="col-md-8 col-md-offset-2 noP sbNewinner" id="header_search">
+                	<input class="inputSN" id="inputSN" type="search" />
+                    <span class="cross" id="crossNS">X</span>
+                    <div class="search-results" style="display:none;">
+						<div class="withlangSearch"></div>
+						<div class="withoutlangSearch"></div>
+						<div class="noresult"></div>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="clear:both;"></div>
+    </header>
+    
+
+    <style type="text/css">
+@media only screen and (max-width: 640px) {
+	.mce-btn button{
+		font-size: 11px;
+	}
+	#mceu_25{
+		overflow: hidden;
+	}
+}
+</style>
+    
+<div class="col-xs-12 text-center pps-spr pps-spr-lumba-daba pps-spr-after-heading" style="margin-top:10px;">
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 970x90 - Banner -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:970px;height:90px"
+     data-ad-client="ca-pub-7155931151667823"
+     data-ad-slot="2900541805"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+    <!-- Main Site -->
+<script src="https://www.prepostseo.com/assets/pps-frontend/lib/tinymce/jquery.tinymce.min.js"></script>
+<script src="https://www.prepostseo.com/assets/pps-frontend/lib/tinymce/tinymce.min.js"></script>
+    <div class="container-fluid">
+    	<div class="container noP">
+				<div class="leftcol">
+					<div class="col-md-12 shadowBox">
+						<h1 class="h_tool">Online Text Editor</h1>
+						<p class="text16 text-center">						</p>
+						
+<div class="col-xs-12 text-center" style="margin-top:10px;">
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- desktop 300x250 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:336px;height:280px"
+     data-ad-client="ca-pub-7155931151667823"
+     data-ad-slot="6951547584"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+				<!-- Content Section -->
+					
+
+					<div class="col-xs-12 form">
+						<div class="text-sec">
+							<div class="col-md-12 p-0">
+									
+<div class="col-xs-12 text-center pps-spr pps-spr-lumba-daba pps-spr-tool-top noP" style="margin:10px 0;">
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- TOP PPS Ad -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:728px;height:90px"
+     data-ad-client="ca-pub-7155931151667823"
+     data-ad-slot="2135462195"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+
+
+</div>
+								<form action="" method="post" enctype="multipart/form-data" id="form" target="_blank">
+								<div class="cs-editor">
+									<textarea class="w-textbox" id="textbox" name="textbox" required="required" rows="10" placeholder="Start typing here..."></textarea>
+									<input type="hidden" name="saveas" id="saveas" value="word">
+								</div>
+								<br>
+								<input name="save_type" value="pdf" type="hidden" id="sv_type"/>
+								<input name="tool_submit" value="1" type="hidden"/>	
+								<p class="text-center">
+									<button class="btn btn-lg btn-success active" onClick="saveAsPdf()">Save as PDF</button>
+									<button class="btn btn-lg btn-success active" onClick="saveAsDoc()">Save as DOC</button>
+								</p>
+								</form>
+							</div>    
+						</div>
+					</div>
+					</div>
+<script type="text/javascript">
+tinymce.init({ 
+	selector:'.w-textbox',
+	plugins: ["code emoticons advlist charmap directionality  lists  link insertdatetime nonbreaking pagebreak preview print searchreplace table wordcount","searchreplace visualblocks code fullscreen","insertdatetime media table contextmenu paste"],
+	toolbar: "code emoticons advlist charmap ltr rtl numlist bullist link insertdatetime nonbreaking pagebreak preview print searchreplace table wordcount",
+	branding: false
+});
+
+function saveas(type){
+	var input = $('textarea#textbox').val();
+	if(type){
+	$('#saveas').val(type);
+	$('#formSubmit').submit();
+	} else {
+	alert('Please enter text');
+	}
+}
+	function saveAsPdf(){
+		tinyMCE.triggerSave();
+		$('#sv_type').val('pdf');
+		$('#form').submit();
+	}
+	function saveAsDoc(){
+		tinyMCE.triggerSave();
+		$('#sv_type').val('doc');
+		$('#form').submit();
+	}
+</script>		
+					
+<div class="col-xs-12 text-center pps-spr pps-spr-lumba-daba pps-spr-after-button" style="margin-top:10px;">
+
+</div>
+<div class="col-sm-12 top-fact clear">
+                    	<h3 class="text-info"><strong>&mdash; Random Fact &mdash;</strong></h3>
+                    	<p class="fd" id="top-fact-details">
+                        </p>
+                      <p>
+                       	<span class="brnb-r active" id="refreshFactTop" onClick="getRandomfactTop()"><i class="fa fa-refresh"></i> Refresh</span>
+                        </p>
+                    </div>
+                    <script>$(document).ready(function(e) {getRandomfactTop();});</script>					  <div class="container-fluid normal-section">
+						<div class="col-lg-12 noP tool-content">
+							<div class="col-md-12 bdr">
+								<h2 style="text-align: center;">
+	<strong>Online Text Editor</strong></h2>
+<hr />
+<p>
+	Even the best content submissions get rejected if they have grammatical issues. Students face such issues regularly when they are working on essays and other research assignments. Consider that you have to submit a research paper on agile project management. While writing a research paper, one has to focus on two major sections. One is carrying out a complete research so that all points mentioned in the scope are covered properly. Research papers are rejected if there is content redundancy. The second important requirement is submission of grammatically correct content.&nbsp; Reading through every line of the research paper would be a very tough task for students. Prior to submission, each line would have to read to correct the mistakes. In terms of time, this is a very exhausting process which can be avoided easily. Using this online text editor, you can make a content submission without any mistakes.</p>
+<hr />
+<h2>
+	<strong>Plain Text Editor - No istalation needed</strong></h2>
+<p>
+	Installing a plain text editor is a big hassle as well. Before anything, you need to check the compatibility of the laptop, tablet or smartphone on which the installation has to be done. When you are sure that the editor would work on the selected machine, you can proceed with the installation. If you wish to use the editor on multiple devices, an individual installation has to be done on each one of them. For instance, students do have text editing tools on their tablets and smartphones as well. This gives them the option to perform editing tasks while being on the move. For instance, when a student is commuting and suddenly remembers that an assignment has to be edited, the easiest way would be using this online editor.</p>
+<ul>
+	<li>
+		No installations or cumbersome downloads are needed to use this tool. If your device has network connectivity, this tool can be used easily. There is no need to go through any setup files.</li>
+</ul>
+<hr />
+<h2>
+	<strong>How can you edit text using wordpad online?</strong></h2>
+<p>
+	The user interface of online wordpad is incredibly easy. Whether you are a student, working professional, teacher or any other user who wishes to edit content, this tool would work perfectly for you. Let us go through the steps you need to complete to gain more understanding.</p>
+<ol>
+	<li>
+		<h3>
+			<strong>Content uploading / pasting </strong></h3>
+	</li>
+</ol>
+<p>
+	There is a section in which you have to paste the required content or write it from the start. The tool has a list of quality writing / editing options and you can modify a document on end to end basis. For instance, there is an option to insert a table as well. At times, corporate professionals have to insert tables at the last minute prior to submission.</p>
+<ul>
+	<li>
+		Consider that you are a finance professional and your boss tells you to insert the updated audit report of the company. This is when you would need to insert a table with the required details. With this online text editor, you can perform all such options with ease. There is no need to download rigorous editing tools and using them for finalizing content.</li>
+</ul>
+<ol>
+	<li value="2">
+		<h3>
+			<strong>Saving Options for users</strong></h3>
+	</li>
+</ol>
+<p>
+	If you have created a document from the start using this online tool or need to finalize an existing one, you can save it using two formats. After completing the editing tasks, click the &ldquo;save as word&rdquo; or &ldquo;save as PDF&rdquo; option depending on your needs. For instance, students mostly have to submit their assignments and essay papers in word format. Similarly, a finance professional would make a submission in the PDF format.</p>
+<hr />
+<h2>
+	<strong>Free online text editor with no access limitations</strong></h2>
+<p>
+	The best thing about online tools is that they do not have device based usage restrictions. When you are using offline tools, they can only be used after installation has been done successfully on a device. If you wish to use the tool on three devices simultaneously, the installation would be done on each of them. This online text editor is not dependent on installations in any manner. It can be easily accessed on multiple devices with internet connectivity without any installation steps.</p>
+<ul>
+	<li>
+		At times, one has to perform editing tasks for multiple documents. Consider that you are working on a detailed research paper and all the sections have to be edited individually. Considering this requirement, you need a tool which is free and can be used as many times as needed. This plain text editor is a free tool and no limitations have to be faced by the user. It is recommended for students, corporate professionals, marketing personnel and other user types.</li>
+</ul>
+<hr />
+<h2>
+	<strong>Effective error free editing in very less time</strong></h2>
+<p>
+	There are no room for errors in content submissions. If you are a human resource professional and submit a job description with grammatical or format mistakes, your boss would not be happy at all. At the educational or professional level, the content would be free of mistakes irrespective of the form in which it is submitted.</p>
+<ul>
+	<li>
+		Every content submission has a timeline which should be met by the writer. If you are a student, the research submission, essay paper or even daily assignments would have deadlines. You need to divide the writing and editing tasks according to the time available. This tool helps in saving all the time which would have been spent for editing tasks. As a result, the submission can be done without risking timelines.</li>
+</ul>
+<ul>
+	<li>
+		When you talk about editing content, having one error has the same negative impact as several mistakes. Thus, a text editor should only be used if it reads through the content properly and identifies all the made errors. With this tool, you can be absolutely sure that no errors would go undetected. Checking the content without a tool through reading does not have the same efficiency level. Hence, to save time and produce content without errors, using this free online text editor is one of the best way out. This tool is easy to use and even if you have basic knowledge of using online applications, you can use it easily.</li>
+</ul>
+							</div>
+						</div>
+					</div>
+					</div>
+					<div class="rightcol">
+					<div class="sidebarR">
+<style>#carbonads {
+  position: relative;
+  display: flex;
+  width: 300px;
+  height: 250px;
+  background-color: #fff;
+  box-shadow: inset 0 0 1px 1px hsla(0, 0%, 0%, .15);
+  text-align: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu,
+  Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  justify-content: center;
+  align-items: center;
+}
+
+#carbonads a {
+  color: #111;
+  text-decoration: none;
+}
+
+#carbonads a:hover {
+  color: #111;
+}
+
+#carbonads span {
+  display: block;
+  overflow: hidden;
+}
+
+.carbon-img {
+  display: block;
+  margin: 0 0 8px;
+  line-height: 1;
+}
+
+.carbon-img img {
+  max-width: 150px !important;
+  width: 150px;
+  height: auto;
+}
+
+.carbon-text {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0 10px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.carbon-poweredby {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: block;
+  padding: 5px 6px;
+  border-radius: 2.5px;
+  background-color: hsl(246, 93%, 69%);
+  color: #fff !important;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 600;
+  font-size: 8px;
+  line-height: 1;
+}</style>
+<div id="carbon-block"></div>
+<script>
+try {
+  fetch(new Request("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", { method: 'HEAD', mode: 'no-cors' })).then(function(response) {
+    return true;
+  }).catch(function(e) {
+    var carbonScript = document.createElement("script");
+    carbonScript.src = "//cdn.carbonads.com/carbon.js?serve=CE7DC53I&placement=wwwprepostseocom";
+    carbonScript.id = "_carbonads_js";
+    document.getElementById("carbon-block").appendChild(carbonScript);
+  });
+} catch (error) {
+  console.log(error);
+}
+</script>
+<a property="item" typeof="WebPage" href="https://www.prepostseo.com/">Home</a> ›
+<a property="item" typeof="WebPage" href="https://www.prepostseo.com/tool/">Tools</a> ›
+Online Text Editor<hr>
+
+
+<div class="col-xs-12 text-center clear noP pps-spr pps-spr-choras-daba pps-spr-sidebar" style="margin:10px 0;">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 300x250 - sidebar -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:300px;height:250px"
+     data-ad-client="ca-pub-7155931151667823"
+     data-ad-slot="7055409230"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+<div class="rtbg clear greybox">
+<span class="h">Related Tools</span>
+           <a href="https://www.prepostseo.com/code-to-text-ratio">Code to Text Ratio</a>
+           <a href="https://www.prepostseo.com/text-compare">Text &amp; File Compare</a>
+           <a href="https://www.prepostseo.com/word-counter">Word Counter</a>
+           <a href="https://www.prepostseo.com/small-text-generator">Small Text Generator</a>
+</div>
+<div class="text-center">
+</div>
+
+
+
+
+
+<div class="col-md-12 clear text-center text16 rbs otherlangBtns greybox" >
+<h4 class="lh"><strong>&mdash; Languages &mdash;</strong></h4>
+<a href="/tool/online-text-editor" class="btn btn-default">English</a>
+<a href="/tool/es/online-text-editor" class="btn btn-default">Español</a>
+
+</div>
+
+
+<div class="col-md-12 noP sticky">
+
+<div class="col-xs-12 text-center pps-spr pps-spr-choras-daba pps-spr-sidebar noP" style="margin-top:10px;">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 300x600 Ad - Responsive -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7155931151667823"
+     data-ad-slot="2197000072"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+</div>
+
+
+</div>
+				</div>
+			</div>
+			
+    	</div>        
+    </div>
+    
+      
+    <!-- ./Main Site -->
+		
+            
+
+<div class="container-fluid normal-section">
+    <div class="container">
+			</div>
+</div>
+
+ 
+        <footer>
+    	<style>
+.fbtn {
+	border:1px solid #FFFFFF;
+	padding:3px 10px 3px 0;
+	margin-right:5px;
+	display:inline-block !important;
+	width:auto !important;
+}
+</style>
+<div class="container">   
+    <div class="col-sm-12" style="padding:10px 0px;">
+    	<div class="col-sm-4 noP" style="padding-right:20px;">
+        	<img src="https://www.prepostseo.com/imgs/prepostseo-logo-white.png" height="30" alt="prepostseo" >
+            <hr>
+            <p>By Developing 75+ online tools for students, writers and SEO experts, PREPOSTSEO is one of the top free tools websites.</p>
+            <p>2019 &copy; PrePost SEO</p>
+            <img class="lazy" data-src="https://www.prepostseo.com/imgs/ssl-badge.png" width="120"  alt="Prepostseo SSL" /> 
+        	 
+        </div>
+         
+        <div class="col-sm-5 noP" style="padding-right:20px;">
+        	<p class="fh">Prepostseo Services</p> <hr style=" margin:10px 0;" /> <a style="color:#3ACD99;" href="/blog/"><strong>PREPOSTSEO BLOG</strong></a><a href="/plagiarism-checker-api">Plagiarism APIs</a><a href="https://wordpress.org/plugins/prepost-seo/" target="_blank" rel="nofollow noreferrer">Wordpress PrePost SEO Plugin</a><a href="/seo-tools-widgets">SEO Tools Widgets</a><a href="https://www.prepostseo.com/tool/">More Tools</a>
+            <hr style=" margin:10px 0;" />
+            <a href="https://www.facebook.com/prepostseo/" target="_blank" class="fbtn"><i class="fa fa-facebook"></i></a>
+            <a href="https://twitter.com/prepostseo" target="_blank" class="fbtn"><i class="fa fa-twitter"></i></a>
+            <a href="https://www.linkedin.com/company/prepostseo/" target="_blank" class="fbtn"><i class="fa fa-linkedin"></i></a>
+            <a href="https://play.google.com/store/apps/developer?id=prepostseo.com" target="_blank" class="fbtn"><i class="fa fa-android"></i></a>
+            <a href="https://apps.apple.com/us/app/plagiarism-checker-prepostseo/id1463941368" target="_blank" class="fbtn"><i class="fa fa-apple"></i></a>
+        </div>
+        <div class="col-sm-3 noP" style="padding-right:20px;">
+        	
+        	<p class="fh">Resources</p> <hr style=" margin:10px 0;" /> <a href="/about">About us</a><a href="/contact">Contact us </a><a href="/advertise">Advertise</a><a href="/faqs">FAQs</a><a href="/privacy-policy">Privacy Policy</a><a href="/refund-policy">Refund Policy</a><a href="/terms-of-use">Terms of use</a>
+        </div>      
+            </div>
+</div>
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');ga('create', 'UA-67516616-1', 'auto');ga('send', 'pageview');
+
+function showDabay(){
+	var MsgB = '<div class="bg-dark"><div class="boxadB text-center"><p><i class="fa fa-frown-o fa-3x text-info"></i><br><strong>Ad Blocker Detected!</strong></p><p>We hate Ads as much as you do. But to keep this website running we have to place ads.<a href="https://www.prepostseo.com/cart?plan=10">Upgrade your account</a>, To Enjoy Ads Free Services and make SEO tools 10X faster.</p><p><span class="btn btn-danger gotit" >Got it</span></p></div></div>';
+	if(typeof tool_title !== 'undefined'){
+		$("body").append(MsgB);
+	}
+	$(".bg-dark").on('click', '.gotit', function(){$(".bg-dark").remove();});
+	
+}
+</script>
+<script src="https://www.prepostseo.com/assets/pps-frontend/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://use.fontawesome.com/43844833b2.js"></script>
+<script src="https://www.prepostseo.com/assets/lib/js/functions.js?v=2.0"></script>
+<script type="text/javascript" src="https://www.prepostseo.com/assets/lib/js/lazy.js"></script>
+<script type="application/javascript">
+	$("#header_search #inputSN").on("keyup" , function(){
+		search_bar("#header_search");
+		
+	});
+	$("#searchInput-banner").on("keyup" , function(){
+		search_bar("#search-banner-sec");
+		
+	});
+	
+	function search_bar(id){
+		if(id == "#search-banner-sec"){
+			
+			var search = $(""+id+" #searchInput-banner").val();
+			
+		}else{
+			var search = $(""+id+" #inputSN").val();	
+		}
+		if(search.length < 2){
+			return false;
+		}
+		if(search == ""){
+			$(""+id+" .search-results").show();
+			$(""+id+" .search-results .noresult").html("<span class='noresult'>No result found related to your keyword...</span>");
+			return false;
+		}
+
+
+		if(search == ""){
+			$(""+id+" .search-results").show();
+			$(""+id+" .search-results .noresult").html("<span class='noresult'>No result found related to your keyword...</span>");
+			return false;
+		}
+		var langSearch = "";
+		console.log(search);
+
+		$.ajax({
+			url : "https://www.prepostseo.com/frontend/frontsearchtool",
+			type:"post",
+			data:{search:search,lang:langSearch},
+			dataType: "json",
+			success: function(resp){
+				var html='';
+
+				if(resp.fail){
+
+					html = resp.fail;
+
+					$(""+id+" .search-results").show();
+					$(""+id+" .search-results .withoutlangSearch").html(html);
+					$(""+id+" .search-results .withlangSearch").html(html);
+
+				}else{
+					$(""+id+" .search-results .withoutlangSearch").html("");
+					$(""+id+" .search-results .withlangSearch").html("");
+					$(""+id+" .search-results").hide();
+
+					if(search.length < 2)
+					{
+						return false;
+					}
+
+					$(""+id+" .search-results").show();
+
+					var ToolsArr= resp;
+					
+					if(id == "#search-banner-sec"){
+			
+						var val = clearText($(""+id+" #searchInput-banner").val());
+						$(""+id+" .search-results .withoutlangSearch").html("");
+						$(""+id+" .search-results .withlangSearch").html("");
+						$(""+id+" .search-results .noresult").html("");
+						$(""+id+" .search-results").hide();
+
+					}else{
+						var val = clearText($(""+id+" #inputSN").val());
+						$(""+id+" .search-results .withoutlangSearch").html("");
+						$(""+id+" .search-results .withlangSearch").html("");
+						$(""+id+" .search-results .noresult").html("");
+						$(""+id+" .search-results").hide();
+					}
+					
+					
+					
+					if(val.length < 2){return false;}$(""+id+" .search-results").show();var matches = 0;
+					var withoutLang = '';
+					var withLang = '';
+					$.each(ToolsArr, function(index, tool){
+
+						//console.log(tool);
+						var lang_tool = tool[3];
+						var myVal = clearText(tool[0]);
+
+						if(myVal != ""){
+							matches++;
+							if(tool[2] == "1"){
+								var href = base_url+tool[1];
+							}else if(tool[2] == "2"){
+								var href = base_url +"calc/"+tool[1];
+							}else if(tool[2] == "3"){
+								var href = base_url +"tool/"+tool[1];
+							}
+							
+							var re = new RegExp(val,"gi");
+							var toolName = tool[0].replace(re, "<strong>"+val+"</strong>");
+							if(lang_tool){
+								withLang += '<span class="match"><a href="'+href+'">'+toolName+ '</a></span>';
+							}else{
+								withoutLang += '<span class="match"><a href="'+href+'">'+toolName+ '</a></span>';
+							}	
+							//console.log(withLang);
+							//console.log(withoutLang);
+						}
+						if(withLang != ''){
+							$(""+id+" .search-results .withoutlangSearch").html('<div class="langnamesearch"><span>All around the web</span></div>'+withoutLang);	
+							$(""+id+" .search-results .withlangSearch").html('<div class="langnamesearch"><span> only</span></div>'+withLang);
+						}else{
+							$(""+id+" .search-results .withoutlangSearch").html(withoutLang);
+							$(""+id+" .search-results .withlangSearch").html(withLang);
+						}
+					});
+					if(matches < 1){$(""+id+" .search-results .noresult").html("<span class='noresult'>No result found related to your keyword...</span>");}
+				}
+			}
+		});
+	}
+		
+</script>
+    </footer>
+</div>
+</body>
+</html>
