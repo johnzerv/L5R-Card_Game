@@ -131,7 +131,7 @@ General Notes
 Authors
 -------
 
-- Yiannis Zervakis
+- Yannis Zervakis
 
 - [George Sittas](https://github.com/GeorgeSittas)
 
